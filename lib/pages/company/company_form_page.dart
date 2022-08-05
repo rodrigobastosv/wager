@@ -1,5 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:select_form_field/select_form_field.dart';
 
 class CompanyFormPage extends StatefulWidget {
   const CompanyFormPage({Key? key}) : super(key: key);
@@ -55,6 +60,13 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
                 border: OutlineInputBorder(),
                 hintText: 'Telefone',
               ),
+              inputFormatters: [
+                MaskTextInputFormatter(
+                  mask: '(##) # ########',
+                  filter: {"#": RegExp(r'[0-9]')},
+                  type: MaskAutoCompletionType.lazy,
+                ),
+              ],
               validator: (phone) => phone!.isEmpty ? 'Campo Obrigatório' : null,
               onSaved: (phone) => _phone = phone,
             ),
@@ -67,29 +79,61 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
                   business!.isEmpty ? 'Campo Obrigatório' : null,
               onSaved: (business) => _business = business,
             ),
-            TextFormField(
+            DateTimeField(
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Data Base',
               ),
+              format: DateFormat("dd/MM/yyyy"),
               validator: (baseDate) =>
-                  baseDate!.isEmpty ? 'Campo Obrigatório' : null,
-              onSaved: (baseDate) => _baseDate = baseDate,
+                  baseDate == null ? 'Campo Obrigatório' : null,
+              onSaved: (baseDate) => _baseDate = baseDate.toString(),
+              onShowPicker: (_, currentValue) => showDatePicker(
+                context: context,
+                locale: const Locale('pt', 'BR'),
+                firstDate: DateTime(1900),
+                initialDate: currentValue ?? DateTime.now(),
+                lastDate: DateTime(2100),
+              ),
             ),
-            TextFormField(
+            DateTimeField(
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Data das Informações',
               ),
+              format: DateFormat("dd/MM/yyyy"),
               validator: (infoDate) =>
-                  infoDate!.isEmpty ? 'Campo Obrigatório' : null,
-              onSaved: (infoDate) => _infoDate = infoDate,
+                  infoDate == null ? 'Campo Obrigatório' : null,
+              onSaved: (infoDate) => _infoDate = infoDate.toString(),
+              onShowPicker: (_, currentValue) => showDatePicker(
+                context: context,
+                locale: const Locale('pt', 'BR'),
+                firstDate: DateTime(1900),
+                initialDate: currentValue ?? DateTime.now(),
+                lastDate: DateTime(2100),
+              ),
             ),
-            TextFormField(
+            SelectFormField(
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'Porte da Empresa',
               ),
+              type: SelectFormFieldType.dropdown,
+              initialValue: 'Até 4.8 mil',
+              labelText: 'Porte da Empresa',
+              items: const [
+                {
+                  'value': 'Até 4.8 mil',
+                  'label': 'Até 4.8 mil',
+                },
+                {
+                  'value': 'De 4.8 mil até 20 mil',
+                  'label': 'De 4.8 mil até 20 mil',
+                },
+                {
+                  'value': 'Acima de 20 mil',
+                  'label': 'Acima de 20 mil',
+                },
+              ],
               validator: (invoicing) =>
                   invoicing!.isEmpty ? 'Campo Obrigatório' : null,
               onSaved: (invoicing) => _invoicing = invoicing,
@@ -99,6 +143,8 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
                 border: OutlineInputBorder(),
                 hintText: 'Número de Funcionários',
               ),
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               validator: (numberOfEmployees) =>
                   numberOfEmployees!.isEmpty ? 'Campo Obrigatório' : null,
               onSaved: (numberOfEmployees) =>
