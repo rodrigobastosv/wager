@@ -5,9 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:select_form_field/select_form_field.dart';
+import 'package:wager/pages/layout/w_scaffold.dart';
 
 class CompanyFormPage extends StatefulWidget {
   const CompanyFormPage({Key? key}) : super(key: key);
+
+  static const routeName = 'companyForm';
 
   @override
   State<CompanyFormPage> createState() => _CompanyFormPageState();
@@ -33,7 +36,7 @@ class _CompanyFormPageState extends State<CompanyFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WScaffold(
       body: Form(
         key: _formKey,
         child: Column(

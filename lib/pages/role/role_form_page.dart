@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:wager/pages/layout/w_scaffold.dart';
 
 class RoleFormPage extends StatefulWidget {
   const RoleFormPage({Key? key}) : super(key: key);
+
+  static const routeName = 'roleForm';
 
   @override
   State<RoleFormPage> createState() => _RoleFormPageState();
@@ -22,7 +25,7 @@ class _RoleFormPageState extends State<RoleFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WScaffold(
       body: Form(
         key: _formKey,
         child: Column(

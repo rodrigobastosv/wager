@@ -1,14 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:wager/pages/layout/w_scaffold.dart';
 
 import 'role_form_page.dart';
 
 class RoleListPage extends StatelessWidget {
   const RoleListPage({Key? key}) : super(key: key);
 
+  static const routeName = 'roleList';
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WScaffold(
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: FirebaseFirestore.instance.collection('role').snapshots(),
         builder: ((_, snapshot) {
@@ -32,10 +35,9 @@ class RoleListPage extends StatelessWidget {
         }),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => const RoleFormPage(),
-          ),
+        onPressed: () => Navigator.pushNamed(
+          context,
+          RoleFormPage.routeName,
         ),
         child: const Icon(Icons.add),
       ),

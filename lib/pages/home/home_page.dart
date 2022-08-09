@@ -1,36 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:wager/pages/company/company_list_page.dart';
+import 'package:wager/pages/layout/w_scaffold.dart';
 import 'package:wager/pages/role/role_list_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
+  static const routeName = '/';
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Wrap(
-        children: [
-          _HomeCard(
-            label: 'EMPRESAS',
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const CompanyListPage(),
+    return WScaffold(
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 32),
+          child: Wrap(
+            spacing: 32,
+            runSpacing: 32,
+            children: [
+              _HomeCard(
+                label: 'EMPRESAS',
+                onTap: () => Navigator.restorablePushNamed(
+                  context,
+                  CompanyListPage.routeName,
+                ),
               ),
-            ),
-          ),
-          _HomeCard(
-            label: 'CARGOS',
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const RoleListPage(),
+              _HomeCard(
+                label: 'CARGOS',
+                onTap: () => Navigator.restorablePushNamed(
+                  context,
+                  RoleListPage.routeName,
+                ),
               ),
-            ),
+              _HomeCard(
+                label: 'SALÁRIOS',
+                onTap: () {},
+              ),
+            ],
           ),
-          _HomeCard(
-            label: 'SALÁRIOS',
-            onTap: () {},
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -48,11 +57,11 @@ class _HomeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        height: 80,
-        width: 80,
+    return SizedBox(
+      height: 140,
+      width: 200,
+      child: OutlinedButton(
+        onPressed: onTap,
         child: Text(label),
       ),
     );
