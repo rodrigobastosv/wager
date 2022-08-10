@@ -7,6 +7,8 @@ class SignInPage extends StatefulWidget {
     super.key,
   });
 
+  static const routeName = '/signIn';
+
   @override
   State<SignInPage> createState() => _SignInPageState();
 }
@@ -65,11 +67,7 @@ class _SignInPageState extends State<SignInPage> {
 
                     if (userCredential.user != null) {
                       if (!mounted) return;
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const HomePage(),
-                        ),
-                      );
+                      Navigator.pushNamed(context, HomePage.routeName);
                     }
                   } on FirebaseAuthException catch (e) {
                     setState(() {

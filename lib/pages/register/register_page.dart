@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -57,13 +58,33 @@ class _RegisterPageState extends State<RegisterPage> {
   int? _seguroAcidentesDeTrabalhoFuncionario;
   Map<String, dynamic>? _informacoesBeneficios;
 
+  /// Cargos
+  List<String> cargosDisponiveis = [];
+  bool estaEmAdicaoDeCargos = false;
+  String? _cargo;
+  String? _senioridade;
+  String? _vinculo;
+  int? _frequencia;
+  int? _salario;
+  int? _bonificacoes;
+  String? _outros;
+  final List<Map<String, dynamic>> _cargosDaEmpresa = [];
+
   late final GlobalKey<FormState> _companyInfoFormKey;
   late final GlobalKey<FormState> _benefitsFormKey;
+  late final GlobalKey<FormState> _cargosFormKey;
 
   @override
   void initState() {
     _companyInfoFormKey = GlobalKey<FormState>();
     _benefitsFormKey = GlobalKey<FormState>();
+    _cargosFormKey = GlobalKey<FormState>();
+
+    FirebaseFirestore.instance.collection('role').get().then((querySnapshot) {
+      cargosDisponiveis = querySnapshot.docs
+          .map((doc) => doc.data()['name'] as String)
+          .toList();
+    });
     super.initState();
   }
 
@@ -82,29 +103,26 @@ class _RegisterPageState extends State<RegisterPage> {
         onStepTapped: (step) => tapped(step),
         onStepContinue: () {
           if (_currentStep == 0) {
-            /*final form = _companyInfoFormKey.currentState!;
+            final form = _companyInfoFormKey.currentState!;
             if (form.validate()) {
               form.save();
-              _companyInfo = {
-                  'name': _name,
-                  'contact': _contact,
-                  'business': _business,
-                  'phone': _phone,
-                  'baseDate': _baseDate,
-                  'infoDate': _infoDate,
-                  'invoicing': _invoicing,
-                  'numberOfEmployees': _numberOfEmployees,
-                };
-
-              setState(() {
-                _currentStep++;
-              });
-            }*/
+              _informacoesDaEmpresa = {
+                'nome': _nome,
+                'contato': _contato,
+                'ramo': _ramo,
+                'telefone': _telefone,
+                'dataBase': _dataBase,
+                'dataDosDados': _dataDosDados,
+                'porte': _porte,
+                'numeroDeFuncionarios': _numeroDeFuncionarios,
+              };
+              form.reset();
+            }
             setState(() {
               _currentStep++;
             });
           } else if (_currentStep == 1) {
-            final form = _companyInfoFormKey.currentState!;
+            final form = _benefitsFormKey.currentState!;
             if (form.validate()) {
               form.save();
               _informacoesBeneficios = {
@@ -162,13 +180,17 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                 }
               };
-
-              setState(() {
-                _currentStep++;
-              });
+              form.reset();
             }
+            setState(() {
+              _currentStep++;
+            });
           } else {
-            // Save Firebase
+            FirebaseFirestore.instance.collection('teste').doc(_nome).set({
+              'empresa': _informacoesDaEmpresa,
+              'beneficios': _informacoesBeneficios,
+              'cargos': _cargosDaEmpresa,
+            });
           }
         },
         onStepCancel: cancel,
@@ -638,24 +660,202 @@ class _RegisterPageState extends State<RegisterPage> {
                 ],
               ),
             ),
-            isActive: _currentStep >= 0,
+            isActive: _currentStep >= 1,
             state: _currentStep >= 1 ? StepState.complete : StepState.disabled,
           ),
           Step(
             title: const Text('Cargos'),
-            content: Column(
-              children: <Widget>[
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Mobile Number'),
-                ),
-              ],
-            ),
-            isActive: _currentStep >= 0,
+            content: estaEmAdicaoDeCargos
+                ? Column(
+                    children: [
+                      Form(
+                        key: _cargosFormKey,
+                        child: Column(
+                          children: <Widget>[
+                            SelectFormField(
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                              ),
+                              type: SelectFormFieldType.dropdown,
+                              initialValue: _cargo,
+                              labelText: 'Cargo',
+                              hintText: 'Cargo',
+                              items: _getCargos(),
+                              validator: (cargo) =>
+                                  cargo!.isEmpty ? 'Campo Obrigatório' : null,
+                              onSaved: (cargo) => _cargo = cargo,
+                              onChanged: (cargo) => setState(() {
+                                _cargo = cargo;
+                              }),
+                            ),
+                            SelectFormField(
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                              ),
+                              type: SelectFormFieldType.dropdown,
+                              initialValue: 'Junior (Até 3 anos)',
+                              labelText: 'Nivel de Senioridade',
+                              items: const [
+                                {
+                                  'value': 'Junior (Até 3 anos)',
+                                  'label': 'Junior (Até 3 anos)',
+                                },
+                                {
+                                  'value': 'Pleno (4 a 9 anos)',
+                                  'label': 'Pleno (4 a 9 anos)',
+                                },
+                                {
+                                  'value': 'Pleno (4 a 9 anos)',
+                                  'label': 'Pleno (4 a 9 anos)',
+                                },
+                                {
+                                  'value': 'Especialista (Mais de 12 anos)',
+                                  'label': 'Especialista (Mais de 12 anos)',
+                                },
+                              ],
+                              validator: (senioridade) => senioridade!.isEmpty
+                                  ? 'Campo Obrigatório'
+                                  : null,
+                              onSaved: (senioridade) =>
+                                  _senioridade = senioridade,
+                            ),
+                            SelectFormField(
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                              ),
+                              type: SelectFormFieldType.dropdown,
+                              initialValue: 'CLT',
+                              labelText: 'Vínculo',
+                              items: const [
+                                {
+                                  'value': 'CLT',
+                                  'label': 'CLT',
+                                },
+                                {
+                                  'value': 'PJ',
+                                  'label': 'PJ',
+                                },
+                                {
+                                  'value': 'Terceirizado',
+                                  'label': 'Terceirizado',
+                                },
+                              ],
+                              validator: (vinculo) =>
+                                  vinculo!.isEmpty ? 'Campo Obrigatório' : null,
+                              onSaved: (vinculo) => _vinculo = vinculo,
+                            ),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: 'Frequência',
+                              ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              validator: (frequencia) => frequencia!.isEmpty
+                                  ? 'Campo Obrigatório'
+                                  : null,
+                              onSaved: (frequencia) =>
+                                  _frequencia = int.tryParse(frequencia!),
+                            ),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: 'Salário',
+                              ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              validator: (salario) =>
+                                  salario!.isEmpty ? 'Campo Obrigatório' : null,
+                              onSaved: (salario) =>
+                                  _salario = int.tryParse(salario!),
+                            ),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: 'Bonificações',
+                              ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              onSaved: (bonificacoes) =>
+                                  _bonificacoes = int.tryParse(bonificacoes!),
+                            ),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: 'Outros',
+                              ),
+                              onSaved: (outros) => _outros = outros,
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                final form = _cargosFormKey.currentState!;
+                                if (form.validate()) {
+                                  form.save();
+                                  setState(() {
+                                    _cargosDaEmpresa.add({
+                                      'cargo': _cargo,
+                                      'senioridade': _senioridade,
+                                      'vinculo': _vinculo,
+                                      'frequencia': _frequencia,
+                                      'salario': _salario,
+                                      'bonificacoes': _bonificacoes,
+                                      'outros': _outros,
+                                    });
+                                    estaEmAdicaoDeCargos = false;
+                                    _cargo = null;
+                                  });
+                                  form.reset();
+                                }
+                              },
+                              child: const Text('Salvar'),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                : Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            estaEmAdicaoDeCargos = true;
+                          });
+                        },
+                        child: const Text('Adicionar'),
+                      ),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: _cargosDaEmpresa.length,
+                        itemBuilder: (_, i) => ListTile(
+                          title: Text(_cargosDaEmpresa[i]['cargo']),
+                        ),
+                      ),
+                    ],
+                  ),
+            isActive: _currentStep >= 2,
             state: _currentStep >= 2 ? StepState.complete : StepState.disabled,
           ),
         ],
       ),
     );
+  }
+
+  List<Map<String, dynamic>> _getCargos() {
+    return cargosDisponiveis
+        .map(
+          (cargo) => {
+            'value': cargo as dynamic,
+            'label': cargo as dynamic,
+          },
+        )
+        .toList();
   }
 
   tapped(int step) {
