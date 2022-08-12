@@ -8,11 +8,13 @@ class WScaffold extends StatelessWidget {
     required this.body,
     this.title,
     this.floatingActionButton,
+    this.withMenu = true,
   }) : super(key: key);
 
   final Widget body;
   final String? title;
   final Widget? floatingActionButton;
+  final bool withMenu;
 
   @override
   Widget build(BuildContext context) {
@@ -47,24 +49,26 @@ class WScaffold extends StatelessWidget {
         leading: const SizedBox(),
         leadingWidth: 0,
         actions: [
-          _MenuItem(
-            onPressed: () => Navigator.restorablePushNamed(
-              context,
-              CompanyListPage.routeName,
+          if (withMenu) ...{
+            _MenuItem(
+              onPressed: () => Navigator.restorablePushNamed(
+                context,
+                CompanyListPage.routeName,
+              ),
+              label: 'EMPRESAS',
             ),
-            label: 'EMPRESAS',
-          ),
-          _MenuItem(
-            onPressed: () => Navigator.restorablePushNamed(
-              context,
-              RoleListPage.routeName,
+            _MenuItem(
+              onPressed: () => Navigator.restorablePushNamed(
+                context,
+                RoleListPage.routeName,
+              ),
+              label: 'CARGOS',
             ),
-            label: 'CARGOS',
-          ),
-          _MenuItem(
-            onPressed: () {},
-            label: 'SALÁRIOS',
-          ),
+            _MenuItem(
+              onPressed: () {},
+              label: 'SALÁRIOS',
+            ),
+          },
           const SizedBox(width: 16),
         ],
       ),

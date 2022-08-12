@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:select_form_field/select_form_field.dart';
+import 'package:wager/pages/layout/w_scaffold.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -90,14 +91,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Cadastro'),
-        centerTitle: true,
-      ),
+    return WScaffold(
+      title: 'Cadastro',
+      withMenu: false,
       body: Stepper(
         type: StepperType.horizontal,
+        elevation: 0,
         physics: const ScrollPhysics(),
         currentStep: _currentStep,
         onStepTapped: (step) => tapped(step),
@@ -200,122 +199,165 @@ class _RegisterPageState extends State<RegisterPage> {
             content: Form(
               key: _companyInfoFormKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Nome da Empresa',
+                  SizedBox(
+                    width: 400,
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Nome da Empresa',
+                      ),
+                      validator: (name) =>
+                          name!.isEmpty ? 'Campo Obrigatório' : null,
+                      onSaved: (name) => _nome = name,
                     ),
-                    validator: (name) =>
-                        name!.isEmpty ? 'Campo Obrigatório' : null,
-                    onSaved: (name) => _nome = name,
                   ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Contato',
-                    ),
-                    validator: (contact) =>
-                        contact!.isEmpty ? 'Campo Obrigatório' : null,
-                    onSaved: (contact) => _contato = contact,
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Telefone',
-                    ),
-                    inputFormatters: [
-                      MaskTextInputFormatter(
-                        mask: '(##) # ########',
-                        filter: {"#": RegExp(r'[0-9]')},
-                        type: MaskAutoCompletionType.lazy,
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 16,
+                    runSpacing: 16,
+                    children: [
+                      SizedBox(
+                        width: 220,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Ramo da Empresa',
+                          ),
+                          validator: (business) =>
+                              business!.isEmpty ? 'Campo Obrigatório' : null,
+                          onSaved: (business) => _ramo = business,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 220,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'No. de Funcionários',
+                          ),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          validator: (numberOfEmployees) =>
+                              numberOfEmployees!.isEmpty
+                                  ? 'Campo Obrigatório'
+                                  : null,
+                          onSaved: (numberOfEmployees) =>
+                              _numeroDeFuncionarios =
+                                  int.tryParse(numberOfEmployees!),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 200,
+                        child: SelectFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Porte da Empresa',
+                          ),
+                          type: SelectFormFieldType.dropdown,
+                          initialValue: 'Até 4.8 mil',
+                          items: const [
+                            {
+                              'value': 'Até 4.8 mil',
+                              'label': 'Até 4.8 mil',
+                            },
+                            {
+                              'value': 'De 4.8 mil até 20 mil',
+                              'label': 'De 4.8 mil até 20 mil',
+                            },
+                            {
+                              'value': 'Acima de 20 mil',
+                              'label': 'Acima de 20 mil',
+                            },
+                          ],
+                          validator: (invoicing) =>
+                              invoicing!.isEmpty ? 'Campo Obrigatório' : null,
+                          onSaved: (invoicing) => _porte = invoicing,
+                        ),
                       ),
                     ],
-                    validator: (phone) =>
-                        phone!.isEmpty ? 'Campo Obrigatório' : null,
-                    onSaved: (phone) => _telefone = phone,
                   ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Ramo da Empresa',
-                    ),
-                    validator: (business) =>
-                        business!.isEmpty ? 'Campo Obrigatório' : null,
-                    onSaved: (business) => _ramo = business,
-                  ),
-                  DateTimeField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Data Base',
-                    ),
-                    format: DateFormat("dd/MM/yyyy"),
-                    validator: (baseDate) =>
-                        baseDate == null ? 'Campo Obrigatório' : null,
-                    onSaved: (baseDate) => _dataBase = baseDate.toString(),
-                    onShowPicker: (_, currentValue) => showDatePicker(
-                      context: context,
-                      locale: const Locale('pt', 'BR'),
-                      firstDate: DateTime(1900),
-                      initialDate: currentValue ?? DateTime.now(),
-                      lastDate: DateTime(2100),
-                    ),
-                  ),
-                  DateTimeField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Data das Informações',
-                    ),
-                    format: DateFormat("dd/MM/yyyy"),
-                    validator: (infoDate) =>
-                        infoDate == null ? 'Campo Obrigatório' : null,
-                    onSaved: (infoDate) => _dataDosDados = infoDate.toString(),
-                    onShowPicker: (_, currentValue) => showDatePicker(
-                      context: context,
-                      locale: const Locale('pt', 'BR'),
-                      firstDate: DateTime(1900),
-                      initialDate: currentValue ?? DateTime.now(),
-                      lastDate: DateTime(2100),
-                    ),
-                  ),
-                  SelectFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                    ),
-                    type: SelectFormFieldType.dropdown,
-                    initialValue: 'Até 4.8 mil',
-                    labelText: 'Porte da Empresa',
-                    items: const [
-                      {
-                        'value': 'Até 4.8 mil',
-                        'label': 'Até 4.8 mil',
-                      },
-                      {
-                        'value': 'De 4.8 mil até 20 mil',
-                        'label': 'De 4.8 mil até 20 mil',
-                      },
-                      {
-                        'value': 'Acima de 20 mil',
-                        'label': 'Acima de 20 mil',
-                      },
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 16,
+                    runSpacing: 16,
+                    children: [
+                      SizedBox(
+                        width: 220,
+                        child: DateTimeField(
+                          decoration: const InputDecoration(
+                            labelText: 'Data Base',
+                          ),
+                          format: DateFormat("dd/MM/yyyy"),
+                          validator: (baseDate) =>
+                              baseDate == null ? 'Campo Obrigatório' : null,
+                          onSaved: (baseDate) =>
+                              _dataBase = baseDate.toString(),
+                          onShowPicker: (_, currentValue) => showDatePicker(
+                            context: context,
+                            locale: const Locale('pt', 'BR'),
+                            firstDate: DateTime(1900),
+                            initialDate: currentValue ?? DateTime.now(),
+                            lastDate: DateTime(2100),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 220,
+                        child: DateTimeField(
+                          decoration: const InputDecoration(
+                            labelText: 'Data das Informações',
+                          ),
+                          format: DateFormat("dd/MM/yyyy"),
+                          validator: (infoDate) =>
+                              infoDate == null ? 'Campo Obrigatório' : null,
+                          onSaved: (infoDate) =>
+                              _dataDosDados = infoDate.toString(),
+                          onShowPicker: (_, currentValue) => showDatePicker(
+                            context: context,
+                            locale: const Locale('pt', 'BR'),
+                            firstDate: DateTime(1900),
+                            initialDate: currentValue ?? DateTime.now(),
+                            lastDate: DateTime(2100),
+                          ),
+                        ),
+                      ),
                     ],
-                    validator: (invoicing) =>
-                        invoicing!.isEmpty ? 'Campo Obrigatório' : null,
-                    onSaved: (invoicing) => _porte = invoicing,
                   ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Número de Funcionários',
-                    ),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 16,
+                    runSpacing: 16,
+                    children: [
+                      SizedBox(
+                        width: 220,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Contato',
+                          ),
+                          validator: (contact) =>
+                              contact!.isEmpty ? 'Campo Obrigatório' : null,
+                          onSaved: (contact) => _contato = contact,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 180,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Telefone',
+                          ),
+                          inputFormatters: [
+                            MaskTextInputFormatter(
+                              mask: '(##) # ########',
+                              filter: {"#": RegExp(r'[0-9]')},
+                              type: MaskAutoCompletionType.lazy,
+                            ),
+                          ],
+                          validator: (phone) =>
+                              phone!.isEmpty ? 'Campo Obrigatório' : null,
+                          onSaved: (phone) => _telefone = phone,
+                        ),
+                      ),
                     ],
-                    validator: (numberOfEmployees) =>
-                        numberOfEmployees!.isEmpty ? 'Campo Obrigatório' : null,
-                    onSaved: (numberOfEmployees) => _numeroDeFuncionarios =
-                        int.tryParse(numberOfEmployees!),
                   ),
                 ],
               ),
@@ -328,28 +370,38 @@ class _RegisterPageState extends State<RegisterPage> {
             content: Form(
               key: _benefitsFormKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ExpansionTile(
                     title: const Text('Assistência Médica'),
+                    expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                    expandedAlignment: Alignment.topLeft,
+                    childrenPadding: const EdgeInsets.only(
+                      left: 16,
+                      bottom: 32,
+                    ),
                     children: [
-                      Row(
+                      const Text('Assistência Médica:'),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 16,
+                        runSpacing: 16,
                         children: [
-                          const Text('Assistência Médica:'),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Empresa',
+                                labelText: 'Empresa',
                               ),
                               onSaved: (name) => _assistenciaMedicaEmpresa =
                                   int.tryParse(name!),
                             ),
                           ),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Funcionário',
+                                labelText: 'Funcionário',
                               ),
                               onSaved: (name) => _assistenciaMedicaFuncionario =
                                   int.tryParse(name!),
@@ -357,24 +409,28 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ],
                       ),
-                      Row(
+                      const SizedBox(height: 16),
+                      const Text('Serviço Ambulatorial:'),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 16,
+                        runSpacing: 16,
                         children: [
-                          const Text('Serviço Ambulatorial:'),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Empresa',
+                                labelText: 'Empresa',
                               ),
                               onSaved: (name) => _servicoAmbulatorialEmpresa =
                                   int.tryParse(name!),
                             ),
                           ),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Funcionário',
+                                labelText: 'Funcionário',
                               ),
                               onSaved: (name) =>
                                   _servicoAmbulatorialFuncionario =
@@ -387,26 +443,35 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   ExpansionTile(
                     title: const Text('Assistência Odontológica'),
+                    expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                    expandedAlignment: Alignment.topLeft,
+                    childrenPadding: const EdgeInsets.only(
+                      left: 16,
+                      bottom: 32,
+                    ),
                     children: [
-                      Row(
+                      const Text('Assistência Odontológica:'),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 16,
+                        runSpacing: 16,
                         children: [
-                          const Text('Assistência Odontológica:'),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Empresa',
+                                labelText: 'Empresa',
                               ),
                               onSaved: (name) =>
                                   _assistenciaOdontologicaEmpresa =
                                       int.tryParse(name!),
                             ),
                           ),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Funcionário',
+                                labelText: 'Funcionário',
                               ),
                               onSaved: (name) =>
                                   _assistenciaOdontologicaFuncionario =
@@ -415,25 +480,29 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ],
                       ),
-                      Row(
+                      const SizedBox(height: 16),
+                      const Text('Serviço Ambulatorial Próprio:'),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 16,
+                        runSpacing: 16,
                         children: [
-                          const Text('Serviço Ambulatorial Próprio:'),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Empresa',
+                                labelText: 'Empresa',
                               ),
                               onSaved: (name) =>
                                   _servicoAmbulatorialProprioEmpresa =
                                       int.tryParse(name!),
                             ),
                           ),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Funcionário',
+                                labelText: 'Funcionário',
                               ),
                               onSaved: (name) =>
                                   _servicoAmbulatorialProprioFuncionario =
@@ -441,30 +510,39 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                   ExpansionTile(
                     title: const Text('Alimentação'),
+                    expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                    expandedAlignment: Alignment.topLeft,
+                    childrenPadding: const EdgeInsets.only(
+                      left: 16,
+                      bottom: 32,
+                    ),
                     children: [
-                      Row(
+                      const Text('Restaurante:'),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 16,
+                        runSpacing: 16,
                         children: [
-                          const Text('Restaurante:'),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Empresa',
+                                labelText: 'Empresa',
                               ),
                               onSaved: (name) =>
                                   _restauranteEmpresa = int.tryParse(name!),
                             ),
                           ),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Funcionário',
+                                labelText: 'Funcionário',
                               ),
                               onSaved: (name) =>
                                   _restauranteFuncionario = int.tryParse(name!),
@@ -472,24 +550,28 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ],
                       ),
-                      Row(
+                      const SizedBox(height: 16),
+                      const Text('Vale Refeição:'),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 16,
+                        runSpacing: 16,
                         children: [
-                          const Text('Vale Refeição:'),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Empresa',
+                                labelText: 'Empresa',
                               ),
                               onSaved: (name) =>
                                   _valeRefeicaoEmpresa = int.tryParse(name!),
                             ),
                           ),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Funcionário',
+                                labelText: 'Funcionário',
                               ),
                               onSaved: (name) => _valeRefeicaoFuncionario =
                                   int.tryParse(name!),
@@ -497,24 +579,28 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ],
                       ),
-                      Row(
+                      const SizedBox(height: 16),
+                      const Text('Cesta Básica:'),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 16,
+                        runSpacing: 16,
                         children: [
-                          const Text('Cesta Básica:'),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Empresa',
+                                labelText: 'Empresa',
                               ),
                               onSaved: (name) =>
                                   _cestaBasicaEmpresa = int.tryParse(name!),
                             ),
                           ),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Funcionário',
+                                labelText: 'Funcionário',
                               ),
                               onSaved: (name) =>
                                   _cestaBasicaFuncionario = int.tryParse(name!),
@@ -522,104 +608,115 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ],
                       ),
-                      Row(
+                      const SizedBox(height: 16),
+                      const Text('Vale Alimentação:'),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 16,
+                        runSpacing: 16,
                         children: [
-                          const Text('Vale Alimentação:'),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Empresa',
+                                labelText: 'Empresa',
                               ),
                               onSaved: (name) =>
                                   _valeAlimentacaoEmpresa = int.tryParse(name!),
                             ),
                           ),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Funcionário',
+                                labelText: 'Funcionário',
                               ),
                               onSaved: (name) => _valeAlimentacaoFuncionario =
                                   int.tryParse(name!),
                             ),
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                   ExpansionTile(
                     title: const Text('Transporte'),
+                    expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                    expandedAlignment: Alignment.topLeft,
+                    childrenPadding: const EdgeInsets.only(
+                      left: 16,
+                      bottom: 32,
+                    ),
                     children: [
-                      Row(
-                        children: [
-                          const Text('Vale Transporte:'),
-                          Expanded(
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Funcionário',
-                              ),
-                              onSaved: (name) =>
-                                  _valeTransporte = int.tryParse(name!),
-                            ),
+                      const Text('Vale Transporte:'),
+                      const SizedBox(height: 6),
+                      SizedBox(
+                        width: 300,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Funcionário',
                           ),
-                        ],
+                          onSaved: (name) =>
+                              _valeTransporte = int.tryParse(name!),
+                        ),
                       ),
-                      Row(
-                        children: [
-                          const Text('Frota Própria:'),
-                          Expanded(
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Funcionário',
-                              ),
-                              onSaved: (name) =>
-                                  _frotaPropria = int.tryParse(name!),
-                            ),
+                      const SizedBox(height: 16),
+                      const Text('Frota Própria:'),
+                      SizedBox(
+                        width: 300,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Funcionário',
                           ),
-                        ],
+                          onSaved: (name) =>
+                              _frotaPropria = int.tryParse(name!),
+                        ),
                       ),
-                      Row(
-                        children: [
-                          const Text('Frota Terceirizada:'),
-                          Expanded(
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Funcionário',
-                              ),
-                              onSaved: (name) =>
-                                  _frotaTerceirizada = int.tryParse(name!),
-                            ),
+                      const SizedBox(height: 16),
+                      const Text('Frota Terceirizada:'),
+                      const SizedBox(height: 6),
+                      SizedBox(
+                        width: 300,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Funcionário',
                           ),
-                        ],
+                          onSaved: (name) =>
+                              _frotaTerceirizada = int.tryParse(name!),
+                        ),
                       ),
                     ],
                   ),
                   ExpansionTile(
                     title: const Text('Seguro de Vida'),
+                    expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                    expandedAlignment: Alignment.topLeft,
+                    childrenPadding: const EdgeInsets.only(
+                      left: 16,
+                      bottom: 32,
+                    ),
                     children: [
-                      Row(
+                      const Text('Seguro de Vida em Grupo:'),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 16,
+                        runSpacing: 16,
                         children: [
-                          const Text('Seguro de Vida em Grupo:'),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Empresa',
+                                labelText: 'Empresa',
                               ),
                               onSaved: (name) => _seguroDeVidaEmGrupoEmpresa =
                                   int.tryParse(name!),
                             ),
                           ),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Funcionário',
+                                labelText: 'Funcionário',
                               ),
                               onSaved: (name) =>
                                   _seguroDeVidaEmGrupoFuncionario =
@@ -628,25 +725,29 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ],
                       ),
-                      Row(
+                      const SizedBox(height: 16),
+                      const Text('Seguro Acidentes de Trabalho:'),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 16,
+                        runSpacing: 16,
                         children: [
-                          const Text('Seguro Acidentes de Trabalho:'),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Empresa',
+                                labelText: 'Empresa',
                               ),
                               onSaved: (name) =>
                                   _seguroAcidentesDeTrabalhoEmpresa =
                                       int.tryParse(name!),
                             ),
                           ),
-                          Expanded(
+                          SizedBox(
+                            width: 300,
                             child: TextFormField(
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Funcionário',
+                                labelText: 'Funcionário',
                               ),
                               onSaved: (name) =>
                                   _seguroAcidentesDeTrabalhoEmpresa =
@@ -666,172 +767,204 @@ class _RegisterPageState extends State<RegisterPage> {
           Step(
             title: const Text('Cargos'),
             content: estaEmAdicaoDeCargos
-                ? Column(
-                    children: [
-                      Form(
-                        key: _cargosFormKey,
-                        child: Column(
+                ? Form(
+                    key: _cargosFormKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Wrap(
+                          spacing: 16,
+                          runSpacing: 16,
                           children: <Widget>[
-                            SelectFormField(
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
+                            SizedBox(
+                              width: 300,
+                              child: SelectFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Cargo',
+                                ),
+                                type: SelectFormFieldType.dropdown,
+                                initialValue: _cargo,
+                                items: _getCargos(),
+                                validator: (cargo) =>
+                                    cargo!.isEmpty ? 'Campo Obrigatório' : null,
+                                onSaved: (cargo) => _cargo = cargo,
+                                onChanged: (cargo) => setState(() {
+                                  _cargo = cargo;
+                                }),
                               ),
-                              type: SelectFormFieldType.dropdown,
-                              initialValue: _cargo,
-                              labelText: 'Cargo',
-                              hintText: 'Cargo',
-                              items: _getCargos(),
-                              validator: (cargo) =>
-                                  cargo!.isEmpty ? 'Campo Obrigatório' : null,
-                              onSaved: (cargo) => _cargo = cargo,
-                              onChanged: (cargo) => setState(() {
-                                _cargo = cargo;
-                              }),
                             ),
-                            SelectFormField(
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
+                            SizedBox(
+                              width: 200,
+                              child: SelectFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Nivel de Senioridade',
+                                ),
+                                type: SelectFormFieldType.dropdown,
+                                initialValue: 'Junior (Até 3 anos)',
+                                items: const [
+                                  {
+                                    'value': 'Junior (Até 3 anos)',
+                                    'label': 'Junior (Até 3 anos)',
+                                  },
+                                  {
+                                    'value': 'Pleno (4 a 9 anos)',
+                                    'label': 'Pleno (4 a 9 anos)',
+                                  },
+                                  {
+                                    'value': 'Pleno (4 a 9 anos)',
+                                    'label': 'Pleno (4 a 9 anos)',
+                                  },
+                                  {
+                                    'value': 'Especialista (Mais de 12 anos)',
+                                    'label': 'Especialista (Mais de 12 anos)',
+                                  },
+                                ],
+                                validator: (senioridade) => senioridade!.isEmpty
+                                    ? 'Campo Obrigatório'
+                                    : null,
+                                onSaved: (senioridade) =>
+                                    _senioridade = senioridade,
                               ),
-                              type: SelectFormFieldType.dropdown,
-                              initialValue: 'Junior (Até 3 anos)',
-                              labelText: 'Nivel de Senioridade',
-                              items: const [
-                                {
-                                  'value': 'Junior (Até 3 anos)',
-                                  'label': 'Junior (Até 3 anos)',
-                                },
-                                {
-                                  'value': 'Pleno (4 a 9 anos)',
-                                  'label': 'Pleno (4 a 9 anos)',
-                                },
-                                {
-                                  'value': 'Pleno (4 a 9 anos)',
-                                  'label': 'Pleno (4 a 9 anos)',
-                                },
-                                {
-                                  'value': 'Especialista (Mais de 12 anos)',
-                                  'label': 'Especialista (Mais de 12 anos)',
-                                },
-                              ],
-                              validator: (senioridade) => senioridade!.isEmpty
-                                  ? 'Campo Obrigatório'
-                                  : null,
-                              onSaved: (senioridade) =>
-                                  _senioridade = senioridade,
                             ),
-                            SelectFormField(
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                              ),
-                              type: SelectFormFieldType.dropdown,
-                              initialValue: 'CLT',
-                              labelText: 'Vínculo',
-                              items: const [
-                                {
-                                  'value': 'CLT',
-                                  'label': 'CLT',
-                                },
-                                {
-                                  'value': 'PJ',
-                                  'label': 'PJ',
-                                },
-                                {
-                                  'value': 'Terceirizado',
-                                  'label': 'Terceirizado',
-                                },
-                              ],
-                              validator: (vinculo) =>
-                                  vinculo!.isEmpty ? 'Campo Obrigatório' : null,
-                              onSaved: (vinculo) => _vinculo = vinculo,
-                            ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Frequência',
-                              ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              validator: (frequencia) => frequencia!.isEmpty
-                                  ? 'Campo Obrigatório'
-                                  : null,
-                              onSaved: (frequencia) =>
-                                  _frequencia = int.tryParse(frequencia!),
-                            ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Salário',
-                              ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              validator: (salario) =>
-                                  salario!.isEmpty ? 'Campo Obrigatório' : null,
-                              onSaved: (salario) =>
-                                  _salario = int.tryParse(salario!),
-                            ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Bonificações',
-                              ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              onSaved: (bonificacoes) =>
-                                  _bonificacoes = int.tryParse(bonificacoes!),
-                            ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Outros',
-                              ),
-                              onSaved: (outros) => _outros = outros,
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                final form = _cargosFormKey.currentState!;
-                                if (form.validate()) {
-                                  form.save();
-                                  setState(() {
-                                    _cargosDaEmpresa.add({
-                                      'cargo': _cargo,
-                                      'senioridade': _senioridade,
-                                      'vinculo': _vinculo,
-                                      'frequencia': _frequencia,
-                                      'salario': _salario,
-                                      'bonificacoes': _bonificacoes,
-                                      'outros': _outros,
-                                    });
-                                    estaEmAdicaoDeCargos = false;
-                                    _cargo = null;
-                                  });
-                                  form.reset();
-                                }
-                              },
-                              child: const Text('Salvar'),
-                            )
                           ],
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 16),
+                        Wrap(
+                          spacing: 16,
+                          runSpacing: 16,
+                          children: [
+                            SizedBox(
+                              width: 150,
+                              child: SelectFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Vínculo',
+                                ),
+                                type: SelectFormFieldType.dropdown,
+                                initialValue: 'CLT',
+                                items: const [
+                                  {
+                                    'value': 'CLT',
+                                    'label': 'CLT',
+                                  },
+                                  {
+                                    'value': 'PJ',
+                                    'label': 'PJ',
+                                  },
+                                  {
+                                    'value': 'Terceirizado',
+                                    'label': 'Terceirizado',
+                                  },
+                                ],
+                                validator: (vinculo) => vinculo!.isEmpty
+                                    ? 'Campo Obrigatório'
+                                    : null,
+                                onSaved: (vinculo) => _vinculo = vinculo,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 150,
+                              child: TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Frequência',
+                                ),
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
+                                validator: (frequencia) => frequencia!.isEmpty
+                                    ? 'Campo Obrigatório'
+                                    : null,
+                                onSaved: (frequencia) =>
+                                    _frequencia = int.tryParse(frequencia!),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 150,
+                              child: TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Salário',
+                                ),
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
+                                validator: (salario) => salario!.isEmpty
+                                    ? 'Campo Obrigatório'
+                                    : null,
+                                onSaved: (salario) =>
+                                    _salario = int.tryParse(salario!),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 150,
+                              child: TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Bonificações',
+                                ),
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
+                                onSaved: (bonificacoes) =>
+                                    _bonificacoes = int.tryParse(bonificacoes!),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 200,
+                              child: TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Outros',
+                                ),
+                                onSaved: (outros) => _outros = outros,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        ElevatedButton(
+                          onPressed: () {
+                            final form = _cargosFormKey.currentState!;
+                            if (form.validate()) {
+                              form.save();
+                              setState(() {
+                                _cargosDaEmpresa.add({
+                                  'cargo': _cargo,
+                                  'senioridade': _senioridade,
+                                  'vinculo': _vinculo,
+                                  'frequencia': _frequencia,
+                                  'salario': _salario,
+                                  'bonificacoes': _bonificacoes,
+                                  'outros': _outros,
+                                });
+                                estaEmAdicaoDeCargos = false;
+                                _cargo = null;
+                              });
+                              form.reset();
+                            }
+                          },
+                          child: const Text('Salvar'),
+                        ),
+                      ],
+                    ),
                   )
                 : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            estaEmAdicaoDeCargos = true;
-                          });
-                        },
-                        child: const Text('Adicionar'),
+                      SizedBox(
+                        height: 40,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              estaEmAdicaoDeCargos = true;
+                            });
+                          },
+                          label: const Text('Adicionar Cargo'),
+                          icon: const Icon(Icons.add),
+                        ),
                       ),
-                      ListView.builder(
+                      ListView.separated(
                         shrinkWrap: true,
+                        separatorBuilder: (context, index) => const Divider(),
                         itemCount: _cargosDaEmpresa.length,
                         itemBuilder: (_, i) => ListTile(
                           title: Text(_cargosDaEmpresa[i]['cargo']),
