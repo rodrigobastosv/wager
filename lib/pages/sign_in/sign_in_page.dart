@@ -31,83 +31,94 @@ class _SignInPageState extends State<SignInPage> {
     return Scaffold(
       body: Form(
         key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 48),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextFormField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'E-mail',
+        child: Center(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 48),
+            width: 400,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'images/logo.png',
+                  width: 200,
+                  filterQuality: FilterQuality.high,
                 ),
-                validator: (email) =>
-                    email!.isEmpty ? 'Campo Obrigatório' : null,
-                onSaved: (email) => _email = email,
-              ),
-              const SizedBox(height: 18),
-              TextFormField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Senha',
+                const SizedBox(height: 24),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: 'E-mail',
+                  ),
+                  validator: (email) =>
+                      email!.isEmpty ? 'Campo Obrigatório' : null,
+                  onSaved: (email) => _email = email,
                 ),
-                validator: (password) =>
-                    password!.isEmpty ? 'Campo Obrigatório' : null,
-                onSaved: (password) async {
-                  try {
-                    setState(() {
-                      _isLoading = true;
-                    });
+                const SizedBox(height: 18),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: 'Senha',
+                  ),
+                  obscureText: true,
+                  validator: (password) =>
+                      password!.isEmpty ? 'Campo Obrigatório' : null,
+                  onSaved: (password) async {
+                    try {
+                      setState(() {
+                        _isLoading = true;
+                      });
 
-                    final userCredential =
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                      email: _email!,
-                      password: password!,
-                    );
+                      final userCredential = await FirebaseAuth.instance
+                          .signInWithEmailAndPassword(
+                        email: _email!,
+                        password: password!,
+                      );
 
-                    if (userCredential.user != null) {
-                      if (!mounted) return;
-                      Navigator.pushNamed(context, HomePage.routeName);
-                    }
-                  } on FirebaseAuthException catch (e) {
-                    setState(() {
-                      _errorMessage = e.message;
-                    });
-                  } finally {
-                    setState(() {
-                      _isLoading = false;
-                    });
-                  }
-                },
-              ),
-              const SizedBox(height: 28),
-              SizedBox(
-                width: 200,
-                height: 60,
-                child: ElevatedButton(
-                  onPressed: () {
-                    final form = _formKey.currentState!;
-                    if (form.validate()) {
-                      form.save();
+                      if (userCredential.user != null) {
+                        if (!mounted) return;
+                        Navigator.pushNamed(context, HomePage.routeName);
+                      }
+                    } on FirebaseAuthException catch (e) {
+                      setState(() {
+                        _errorMessage = e.message;
+                      });
+                    } finally {
+                      setState(() {
+                        _isLoading = false;
+                      });
                     }
                   },
-                  child: _isLoading
-                      ? const CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
-                        )
-                      : const Text('Entrar'),
                 ),
-              ),
-              const SizedBox(height: 18),
-              if (_errorMessage != null)
-                Text(
-                  _errorMessage!,
-                  style: const TextStyle(
-                    color: Colors.red,
+                const SizedBox(height: 28),
+                SizedBox(
+                  width: 160,
+                  height: 40,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final form = _formKey.currentState!;
+                      if (form.validate()) {
+                        form.save();
+                      }
+                    },
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 40,
+                            child: CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : const Text('Entrar'),
                   ),
                 ),
-            ],
+                const SizedBox(height: 18),
+                if (_errorMessage != null)
+                  Text(
+                    _errorMessage!,
+                    style: const TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:wager/pages/register/register_page.dart';
 import 'package:wager/pages/splash/splash_page.dart';
+import 'package:wager/theme.dart';
 import 'firebase_options.dart';
 import 'pages/company/company_form_page.dart';
 import 'pages/company/company_list_page.dart';
@@ -41,9 +42,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [
         Locale('pt', 'BR'),
       ],
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: theme,
       home: const SplashPage(),
       onGenerateRoute: (routeSettings) {
         return MaterialPageRoute(

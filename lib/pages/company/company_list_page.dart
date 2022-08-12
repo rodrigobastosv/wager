@@ -11,12 +11,14 @@ class CompanyListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WScaffold(
+      title: 'Empresas',
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: FirebaseFirestore.instance.collection('company').snapshots(),
         builder: ((_, snapshot) {
           if (snapshot.hasData) {
-            return ListView.builder(
+            return ListView.separated(
               itemCount: snapshot.data!.docs.length,
+              separatorBuilder: (context, index) => const Divider(),
               itemBuilder: (_, i) {
                 final doc = snapshot.data!.docs.elementAt(i);
                 final data = doc.data();

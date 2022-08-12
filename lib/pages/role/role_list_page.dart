@@ -12,12 +12,14 @@ class RoleListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WScaffold(
+      title: 'Cargos',
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: FirebaseFirestore.instance.collection('role').snapshots(),
         builder: ((_, snapshot) {
           if (snapshot.hasData) {
-            return ListView.builder(
+            return ListView.separated(
               itemCount: snapshot.data!.docs.length,
+              separatorBuilder: (context, index) => const Divider(),
               itemBuilder: (_, i) {
                 final doc = snapshot.data!.docs.elementAt(i);
                 final data = doc.data();
