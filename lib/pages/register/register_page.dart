@@ -92,7 +92,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return WScaffold(
-      title: 'Cadastro',
+      title: 'Cadastro de Dados de Cargos',
       withMenu: false,
       body: Stepper(
         type: StepperType.horizontal,
@@ -100,6 +100,23 @@ class _RegisterPageState extends State<RegisterPage> {
         physics: const ScrollPhysics(),
         currentStep: _currentStep,
         onStepTapped: (step) => tapped(step),
+        controlsBuilder: (_, details) => Padding(
+          padding: const EdgeInsets.only(top: 28),
+          child: Row(
+            children: <Widget>[
+              TextButton(
+                onPressed: details.onStepCancel,
+                child: const Text('Voltar'),
+              ),
+              ElevatedButton(
+                onPressed: details.onStepContinue,
+                child: Text(details.stepIndex == 2
+                    ? 'Salvar Dados'
+                    : 'Continuar'),
+              ),
+            ],
+          ),
+        ),
         onStepContinue: () {
           if (_currentStep == 0) {
             final form = _companyInfoFormKey.currentState!;
@@ -116,10 +133,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 'numeroDeFuncionarios': _numeroDeFuncionarios,
               };
               form.reset();
+
+              setState(() {
+                _currentStep++;
+              });
             }
-            setState(() {
-              _currentStep++;
-            });
           } else if (_currentStep == 1) {
             final form = _benefitsFormKey.currentState!;
             if (form.validate()) {
@@ -180,10 +198,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 }
               };
               form.reset();
+
+              setState(() {
+                _currentStep++;
+              });
             }
-            setState(() {
-              _currentStep++;
-            });
           } else {
             FirebaseFirestore.instance.collection('teste').doc(_nome).set({
               'empresa': _informacoesDaEmpresa,
