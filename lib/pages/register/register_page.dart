@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:select_form_field/select_form_field.dart';
 import 'package:wager/pages/layout/w_scaffold.dart';
 
@@ -81,9 +82,13 @@ class _RegisterPageState extends State<RegisterPage> {
     _benefitsFormKey = GlobalKey<FormState>();
     _cargosFormKey = GlobalKey<FormState>();
 
-    FirebaseFirestore.instance.collection('role').get().then((querySnapshot) {
+    FirebaseFirestore.instance
+        .collection('cargos')
+        .orderBy('nome')
+        .get()
+        .then((querySnapshot) {
       cargosDisponiveis = querySnapshot.docs
-          .map((doc) => doc.data()['name'] as String)
+          .map((doc) => doc.data()['nome'] as String)
           .toList();
     });
     super.initState();
@@ -110,18 +115,17 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               ElevatedButton(
                 onPressed: details.onStepContinue,
-                child: Text(details.stepIndex == 2
-                    ? 'Salvar Dados'
-                    : 'Continuar'),
+                child:
+                    Text(details.stepIndex == 2 ? 'Salvar Dados' : 'Continuar'),
               ),
             ],
           ),
         ),
         onStepContinue: () {
           if (_currentStep == 0) {
-            final form = _companyInfoFormKey.currentState!;
-            if (form.validate()) {
-              form.save();
+            final companyInfoForm = _companyInfoFormKey.currentState!;
+            if (companyInfoForm.validate()) {
+              companyInfoForm.save();
               _informacoesDaEmpresa = {
                 'nome': _nome,
                 'contato': _contato,
@@ -132,16 +136,16 @@ class _RegisterPageState extends State<RegisterPage> {
                 'porte': _porte,
                 'numeroDeFuncionarios': _numeroDeFuncionarios,
               };
-              form.reset();
+              companyInfoForm.reset();
 
               setState(() {
                 _currentStep++;
               });
             }
           } else if (_currentStep == 1) {
-            final form = _benefitsFormKey.currentState!;
-            if (form.validate()) {
-              form.save();
+            final benefitsForm = _benefitsFormKey.currentState!;
+            if (benefitsForm.validate()) {
+              benefitsForm.save();
               _informacoesBeneficios = {
                 'assistenciaMedica': {
                   'assistenciaMedica': {
@@ -197,18 +201,40 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                 }
               };
-              form.reset();
+              benefitsForm.reset();
 
               setState(() {
                 _currentStep++;
               });
             }
           } else {
-            FirebaseFirestore.instance.collection('teste').doc(_nome).set({
-              'empresa': _informacoesDaEmpresa,
-              'beneficios': _informacoesBeneficios,
-              'cargos': _cargosDaEmpresa,
-            });
+            if (_cargosDaEmpresa.isEmpty) {
+              PanaraInfoDialog.show(
+                context,
+                title: 'Atenção',
+                message:
+                    'Você deve cadastrar pelo menos um cargo para a sua empresa!',
+                buttonText: 'OK',
+                onTapDismiss: () => Navigator.of(context).pop(),
+                panaraDialogType: PanaraDialogType.warning,
+              );
+            } else {
+              FirebaseFirestore.instance.collection('empresas').doc(_nome).set({
+                'empresa': _informacoesDaEmpresa,
+                'beneficios': _informacoesBeneficios,
+                'cargos': _cargosDaEmpresa,
+              }).then(
+                (_) => PanaraInfoDialog.show(
+                  context,
+                  title: 'Parabéns',
+                  message: 'Os dados da sua empresa foram salvos com sucesso!',
+                  buttonText: 'OK',
+                  onTapDismiss: () => Navigator.of(context)
+                      .pushNamedAndRemoveUntil('/register', (route) => false),
+                  panaraDialogType: PanaraDialogType.success,
+                ),
+              );
+            }
           }
         },
         onStepCancel: cancel,
@@ -392,7 +418,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ExpansionTile(
-                    title: const Text('Assistência Médica'),
+                    title: const Text('Assistência Médica (Participação %)'),
                     expandedCrossAxisAlignment: CrossAxisAlignment.start,
                     expandedAlignment: Alignment.topLeft,
                     childrenPadding: const EdgeInsets.only(
@@ -412,8 +438,11 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              onSaved: (name) => _assistenciaMedicaEmpresa =
-                                  int.tryParse(name!),
+                              initialValue:
+                                  _assistenciaMedicaEmpresa?.toString() ?? '',
+                              onChanged: (name) => setState(() {
+                                _assistenciaMedicaEmpresa = int.tryParse(name);
+                              }),
                             ),
                           ),
                           SizedBox(
@@ -422,8 +451,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              onSaved: (name) => _assistenciaMedicaFuncionario =
-                                  int.tryParse(name!),
+                              initialValue:
+                                  _assistenciaMedicaFuncionario?.toString() ??
+                                      '',
+                              onChanged: (name) => setState(() {
+                                _assistenciaMedicaFuncionario =
+                                    int.tryParse(name);
+                              }),
                             ),
                           ),
                         ],
@@ -441,8 +475,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              onSaved: (name) => _servicoAmbulatorialEmpresa =
-                                  int.tryParse(name!),
+                              initialValue:
+                                  _servicoAmbulatorialEmpresa?.toString() ?? '',
+                              onChanged: (name) => setState(() {
+                                _servicoAmbulatorialEmpresa =
+                                    int.tryParse(name);
+                              }),
                             ),
                           ),
                           SizedBox(
@@ -451,9 +489,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              onSaved: (name) =>
-                                  _servicoAmbulatorialFuncionario =
-                                      int.tryParse(name!),
+                              initialValue:
+                                  _servicoAmbulatorialFuncionario?.toString() ??
+                                      '',
+                              onChanged: (name) => setState(() {
+                                _servicoAmbulatorialFuncionario =
+                                    int.tryParse(name);
+                              }),
                             ),
                           ),
                         ],
@@ -461,7 +503,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ],
                   ),
                   ExpansionTile(
-                    title: const Text('Assistência Odontológica'),
+                    title:
+                        const Text('Assistência Odontológica (Participação %)'),
                     expandedCrossAxisAlignment: CrossAxisAlignment.start,
                     expandedAlignment: Alignment.topLeft,
                     childrenPadding: const EdgeInsets.only(
@@ -481,9 +524,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              onSaved: (name) =>
-                                  _assistenciaOdontologicaEmpresa =
-                                      int.tryParse(name!),
+                              initialValue:
+                                  _assistenciaOdontologicaEmpresa?.toString() ??
+                                      '',
+                              onChanged: (name) => setState(() {
+                                _assistenciaOdontologicaEmpresa =
+                                    int.tryParse(name);
+                              }),
                             ),
                           ),
                           SizedBox(
@@ -492,9 +539,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              onSaved: (name) =>
-                                  _assistenciaOdontologicaFuncionario =
-                                      int.tryParse(name!),
+                              initialValue: _assistenciaOdontologicaFuncionario
+                                      ?.toString() ??
+                                  '',
+                              onChanged: (name) => setState(() {
+                                _assistenciaOdontologicaFuncionario =
+                                    int.tryParse(name);
+                              }),
                             ),
                           ),
                         ],
@@ -512,9 +563,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              onSaved: (name) =>
-                                  _servicoAmbulatorialProprioEmpresa =
-                                      int.tryParse(name!),
+                              initialValue: _servicoAmbulatorialProprioEmpresa
+                                      ?.toString() ??
+                                  '',
+                              onChanged: (name) => setState(() {
+                                _servicoAmbulatorialProprioEmpresa =
+                                    int.tryParse(name);
+                              }),
                             ),
                           ),
                           SizedBox(
@@ -523,9 +578,14 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              onSaved: (name) =>
-                                  _servicoAmbulatorialProprioFuncionario =
-                                      int.tryParse(name!),
+                              initialValue:
+                                  _servicoAmbulatorialProprioFuncionario
+                                          ?.toString() ??
+                                      '',
+                              onChanged: (name) => setState(() {
+                                _servicoAmbulatorialProprioFuncionario =
+                                    int.tryParse(name);
+                              }),
                             ),
                           ),
                         ],
@@ -533,7 +593,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ],
                   ),
                   ExpansionTile(
-                    title: const Text('Alimentação'),
+                    title: const Text('Alimentação (Participação %)'),
                     expandedCrossAxisAlignment: CrossAxisAlignment.start,
                     expandedAlignment: Alignment.topLeft,
                     childrenPadding: const EdgeInsets.only(
@@ -553,8 +613,11 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              onSaved: (name) =>
-                                  _restauranteEmpresa = int.tryParse(name!),
+                              initialValue:
+                                  _restauranteEmpresa?.toString() ?? '',
+                              onChanged: (name) => setState(() {
+                                _restauranteEmpresa = int.tryParse(name);
+                              }),
                             ),
                           ),
                           SizedBox(
@@ -563,8 +626,11 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              onSaved: (name) =>
-                                  _restauranteFuncionario = int.tryParse(name!),
+                              initialValue:
+                                  _restauranteFuncionario?.toString() ?? '',
+                              onChanged: (name) => setState(() {
+                                _restauranteFuncionario = int.tryParse(name);
+                              }),
                             ),
                           ),
                         ],
@@ -582,8 +648,11 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              onSaved: (name) =>
-                                  _valeRefeicaoEmpresa = int.tryParse(name!),
+                              initialValue:
+                                  _valeRefeicaoEmpresa?.toString() ?? '',
+                              onChanged: (name) => setState(() {
+                                _valeRefeicaoEmpresa = int.tryParse(name);
+                              }),
                             ),
                           ),
                           SizedBox(
@@ -592,8 +661,11 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              onSaved: (name) => _valeRefeicaoFuncionario =
-                                  int.tryParse(name!),
+                              initialValue:
+                                  _valeRefeicaoFuncionario?.toString() ?? '',
+                              onChanged: (name) => setState(() {
+                                _valeRefeicaoFuncionario = int.tryParse(name);
+                              }),
                             ),
                           ),
                         ],
@@ -611,8 +683,11 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              onSaved: (name) =>
-                                  _cestaBasicaEmpresa = int.tryParse(name!),
+                              initialValue:
+                                  _cestaBasicaEmpresa?.toString() ?? '',
+                              onChanged: (name) => setState(() {
+                                _cestaBasicaEmpresa = int.tryParse(name);
+                              }),
                             ),
                           ),
                           SizedBox(
@@ -621,8 +696,11 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              onSaved: (name) =>
-                                  _cestaBasicaFuncionario = int.tryParse(name!),
+                              initialValue:
+                                  _cestaBasicaFuncionario?.toString() ?? '',
+                              onChanged: (name) => setState(() {
+                                _cestaBasicaFuncionario = int.tryParse(name);
+                              }),
                             ),
                           ),
                         ],
@@ -640,8 +718,11 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              onSaved: (name) =>
-                                  _valeAlimentacaoEmpresa = int.tryParse(name!),
+                              initialValue:
+                                  _valeAlimentacaoEmpresa?.toString() ?? '',
+                              onChanged: (name) => setState(() {
+                                _valeAlimentacaoEmpresa = int.tryParse(name);
+                              }),
                             ),
                           ),
                           SizedBox(
@@ -650,8 +731,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              onSaved: (name) => _valeAlimentacaoFuncionario =
-                                  int.tryParse(name!),
+                              initialValue:
+                                  _valeAlimentacaoFuncionario?.toString() ?? '',
+                              onChanged: (name) => setState(() {
+                                _valeAlimentacaoFuncionario =
+                                    int.tryParse(name);
+                              }),
                             ),
                           ),
                         ],
@@ -659,7 +744,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ],
                   ),
                   ExpansionTile(
-                    title: const Text('Transporte'),
+                    title: const Text('Transporte (Participação %)'),
                     expandedCrossAxisAlignment: CrossAxisAlignment.start,
                     expandedAlignment: Alignment.topLeft,
                     childrenPadding: const EdgeInsets.only(
@@ -675,8 +760,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: const InputDecoration(
                             labelText: 'Funcionário',
                           ),
-                          onSaved: (name) =>
-                              _valeTransporte = int.tryParse(name!),
+                          initialValue: _valeTransporte?.toString() ?? '',
+                          onChanged: (name) => setState(() {
+                            _valeTransporte = int.tryParse(name);
+                          }),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -687,8 +774,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: const InputDecoration(
                             labelText: 'Funcionário',
                           ),
-                          onSaved: (name) =>
-                              _frotaPropria = int.tryParse(name!),
+                          initialValue: _frotaPropria?.toString() ?? '',
+                          onChanged: (name) => setState(() {
+                            _frotaPropria = int.tryParse(name);
+                          }),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -700,14 +789,16 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: const InputDecoration(
                             labelText: 'Funcionário',
                           ),
-                          onSaved: (name) =>
-                              _frotaTerceirizada = int.tryParse(name!),
+                          initialValue: _frotaTerceirizada?.toString() ?? '',
+                          onChanged: (name) => setState(() {
+                            _frotaTerceirizada = int.tryParse(name);
+                          }),
                         ),
                       ),
                     ],
                   ),
                   ExpansionTile(
-                    title: const Text('Seguro de Vida'),
+                    title: const Text('Seguro de Vida (Participação %)'),
                     expandedCrossAxisAlignment: CrossAxisAlignment.start,
                     expandedAlignment: Alignment.topLeft,
                     childrenPadding: const EdgeInsets.only(
@@ -727,8 +818,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              onSaved: (name) => _seguroDeVidaEmGrupoEmpresa =
-                                  int.tryParse(name!),
+                              initialValue:
+                                  _seguroDeVidaEmGrupoEmpresa?.toString() ?? '',
+                              onChanged: (name) => setState(() {
+                                _seguroDeVidaEmGrupoEmpresa =
+                                    int.tryParse(name);
+                              }),
                             ),
                           ),
                           SizedBox(
@@ -737,9 +832,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              onSaved: (name) =>
-                                  _seguroDeVidaEmGrupoFuncionario =
-                                      int.tryParse(name!),
+                              initialValue:
+                                  _seguroDeVidaEmGrupoFuncionario?.toString() ??
+                                      '',
+                              onChanged: (name) => setState(() {
+                                _seguroDeVidaEmGrupoFuncionario =
+                                    int.tryParse(name);
+                              }),
                             ),
                           ),
                         ],
@@ -757,9 +856,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              onSaved: (name) =>
-                                  _seguroAcidentesDeTrabalhoEmpresa =
-                                      int.tryParse(name!),
+                              initialValue: _seguroAcidentesDeTrabalhoEmpresa
+                                      ?.toString() ??
+                                  '',
+                              onChanged: (name) => setState(() {
+                                _seguroAcidentesDeTrabalhoEmpresa =
+                                    int.tryParse(name);
+                              }),
                             ),
                           ),
                           SizedBox(
@@ -768,9 +871,14 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              onSaved: (name) =>
-                                  _seguroAcidentesDeTrabalhoEmpresa =
-                                      int.tryParse(name!),
+                              initialValue:
+                                  _seguroAcidentesDeTrabalhoFuncionario
+                                          ?.toString() ??
+                                      '',
+                              onChanged: (name) => setState(() {
+                                _seguroAcidentesDeTrabalhoFuncionario =
+                                    int.tryParse(name);
+                              }),
                             ),
                           ),
                         ],

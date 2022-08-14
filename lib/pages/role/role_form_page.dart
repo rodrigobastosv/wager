@@ -64,10 +64,10 @@ class _RoleFormPageState extends State<RoleFormPage> {
                     final form = _formKey.currentState!;
                     if (form.validate()) {
                       form.save();
-                      await FirebaseFirestore.instance.collection('role').add(
+                      await FirebaseFirestore.instance.collection('cargos').add(
                         {
-                          'name': _name,
-                          'description': _description,
+                          'nome': _name,
+                          'descricao': _description,
                         },
                       );
 

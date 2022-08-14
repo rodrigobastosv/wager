@@ -14,7 +14,7 @@ class RoleListPage extends StatelessWidget {
     return WScaffold(
       title: 'Cargos',
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection('role').snapshots(),
+        stream: FirebaseFirestore.instance.collection('cargos').snapshots(),
         builder: ((_, snapshot) {
           if (snapshot.hasData) {
             return ListView.separated(
@@ -24,8 +24,8 @@ class RoleListPage extends StatelessWidget {
                 final doc = snapshot.data!.docs.elementAt(i);
                 final data = doc.data();
                 return ListTile(
-                  title: Text(data['name']),
-                  subtitle: Text(data['description']),
+                  title: Text(data['nome']),
+                  subtitle: Text(data['descricao']),
                 );
               },
             );
