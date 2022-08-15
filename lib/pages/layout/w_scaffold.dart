@@ -28,7 +28,7 @@ class WScaffold extends StatelessWidget {
                 horizontal: 10,
               ),
               child: Image.asset(
-                'images/logo-menor.png',
+                './assets/images/logo-menor.png',
                 fit: BoxFit.contain,
                 width: 80,
                 filterQuality: FilterQuality.high,

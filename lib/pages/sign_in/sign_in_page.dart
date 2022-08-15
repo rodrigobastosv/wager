@@ -39,7 +39,7 @@ class _SignInPageState extends State<SignInPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  'images/logo.png',
+                  './assets/images/logo.png',
                   width: 200,
                   filterQuality: FilterQuality.high,
                 ),
