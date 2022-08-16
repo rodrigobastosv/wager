@@ -27,7 +27,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String? _telefone;
   String? _dataBase;
   String? _dataDosDados;
-  String? _porte;
+  String? _faturamentoAnual;
   int? _numeroDeFuncionarios;
   Map<String, dynamic>? _informacoesDaEmpresa;
 
@@ -71,7 +71,7 @@ class _RegisterPageState extends State<RegisterPage> {
   int? _frequencia;
   int? _salario;
   int? _bonificacoes;
-  String? _outros;
+  String? _observacoes;
   final List<Map<String, dynamic>> _cargosDaEmpresa = [];
 
   late final GlobalKey<FormState> _companyInfoFormKey;
@@ -149,7 +149,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 'telefone': _telefone,
                 'dataBase': _dataBase,
                 'dataDosDados': _dataDosDados,
-                'porte': _porte,
+                'faturamentoAnual': _faturamentoAnual,
                 'numeroDeFuncionarios': _numeroDeFuncionarios,
               };
               companyInfoForm.reset();
@@ -333,7 +333,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         width: 200,
                         child: SelectFormField(
                           decoration: const InputDecoration(
-                            labelText: 'Porte da Empresa',
+                            labelText: 'Faturamento Anual (R\$)',
                           ),
                           type: SelectFormFieldType.dropdown,
                           initialValue: 'Até 4.8 mil',
@@ -351,11 +351,14 @@ class _RegisterPageState extends State<RegisterPage> {
                               'label': 'Acima de 20 mil',
                             },
                           ],
-                          validator: (invoicing) =>
-                              invoicing!.isEmpty ? 'Campo Obrigatório' : null,
-                          onSaved: (invoicing) => _porte = invoicing,
-                          onChanged: (invoicing) => setState(() {
-                            _porte = invoicing;
+                          validator: (faturamentoAnual) =>
+                              faturamentoAnual!.isEmpty
+                                  ? 'Campo Obrigatório'
+                                  : null,
+                          onSaved: (faturamentoAnual) =>
+                              _faturamentoAnual = faturamentoAnual,
+                          onChanged: (faturamentoAnual) => setState(() {
+                            _faturamentoAnual = faturamentoAnual;
                           }),
                         ),
                       ),
@@ -1128,21 +1131,31 @@ class _RegisterPageState extends State<RegisterPage> {
                                 onSaved: (vinculo) => _vinculo = vinculo,
                               ),
                             ),
-                            SizedBox(
-                              width: 150,
-                              child: TextFormField(
-                                decoration: const InputDecoration(
-                                  labelText: 'Frequência',
+                            Tooltip(
+                              message: '''
+
+Quantidade de ocupantes do cargo que recebe o mesmo valor de salário.
+Ex.: Mecânicos Manutenção
+02 recebem R\$ 850,00
+01 recebe R\$ 920,00
+01 recebe R\$ 980,00
+''',
+                              child: SizedBox(
+                                width: 150,
+                                child: TextFormField(
+                                  decoration: const InputDecoration(
+                                    labelText: 'Frequência',
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  validator: (frequencia) => frequencia!.isEmpty
+                                      ? 'Campo Obrigatório'
+                                      : null,
+                                  onSaved: (frequencia) =>
+                                      _frequencia = int.tryParse(frequencia!),
                                 ),
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                                validator: (frequencia) => frequencia!.isEmpty
-                                    ? 'Campo Obrigatório'
-                                    : null,
-                                onSaved: (frequencia) =>
-                                    _frequencia = int.tryParse(frequencia!),
                               ),
                             ),
                             SizedBox(
@@ -1162,31 +1175,37 @@ class _RegisterPageState extends State<RegisterPage> {
                                     _salario = int.tryParse(salario!),
                               ),
                             ),
-                            SizedBox(
-                              width: 150,
-                              child: TextFormField(
-                                decoration: const InputDecoration(
-                                  labelText: 'Bonificações',
+                            Tooltip(
+                              message: '''
+
+Informar em valores (R\$) quaisquer adicionais recebidos pelo ocupante. Informar no campo observações o tipo de adicional recebidos.
+''',
+                              child: SizedBox(
+                                width: 150,
+                                child: TextFormField(
+                                  decoration: const InputDecoration(
+                                    labelText: 'Bonificações',
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  onSaved: (bonificacoes) =>
+                                      _bonificacoes = int.tryParse(bonificacoes!),
                                 ),
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                                onSaved: (bonificacoes) =>
-                                    _bonificacoes = int.tryParse(bonificacoes!),
                               ),
                             ),
                             SizedBox(
                               width: 200,
                               child: TextFormField(
                                 decoration: const InputDecoration(
-                                  labelText: 'Outros',
+                                  labelText: 'Observações',
                                 ),
                                 keyboardType: TextInputType.number,
                                 inputFormatters: [
                                   FilteringTextInputFormatter.digitsOnly
                                 ],
-                                onSaved: (outros) => _outros = outros,
+                                onSaved: (observacoes) => _observacoes = observacoes,
                               ),
                             ),
                           ],
@@ -1205,7 +1224,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   'frequencia': _frequencia,
                                   'salario': _salario,
                                   'bonificacoes': _bonificacoes,
-                                  'outros': _outros,
+                                  'observacoes': _observacoes,
                                 });
                                 estaEmAdicaoDeCargos = false;
                                 _cargo = null;
