@@ -19,9 +19,11 @@ class _RegisterPageState extends State<RegisterPage> {
   int _currentStep = 0;
 
   // Dados da Empresa
+  List<String> ramosAtuacaoDisponiveis = [];
   String? _nome;
   String? _contato;
   String? _ramo;
+  String? _outroRamo;
   String? _telefone;
   String? _dataBase;
   String? _dataDosDados;
@@ -83,13 +85,27 @@ class _RegisterPageState extends State<RegisterPage> {
     _cargosFormKey = GlobalKey<FormState>();
 
     FirebaseFirestore.instance
+        .collection('ramos_atuacao')
+        .orderBy('nome')
+        .get()
+        .then((querySnapshot) {
+      setState(() {
+        ramosAtuacaoDisponiveis = querySnapshot.docs
+            .map((doc) => doc.data()['nome'] as String)
+            .toList();
+      });
+    });
+
+    FirebaseFirestore.instance
         .collection('cargos')
         .orderBy('nome')
         .get()
         .then((querySnapshot) {
-      cargosDisponiveis = querySnapshot.docs
-          .map((doc) => doc.data()['nome'] as String)
-          .toList();
+      setState(() {
+        cargosDisponiveis = querySnapshot.docs
+            .map((doc) => doc.data()['nome'] as String)
+            .toList();
+      });
     });
     super.initState();
   }
@@ -129,7 +145,7 @@ class _RegisterPageState extends State<RegisterPage> {
               _informacoesDaEmpresa = {
                 'nome': _nome,
                 'contato': _contato,
-                'ramo': _ramo,
+                'ramo': _ramo == 'Outro' ? _outroRamo : _ramo,
                 'telefone': _telefone,
                 'dataBase': _dataBase,
                 'dataDosDados': _dataDosDados,
@@ -149,55 +165,55 @@ class _RegisterPageState extends State<RegisterPage> {
               _informacoesBeneficios = {
                 'assistenciaMedica': {
                   'assistenciaMedica': {
-                    'empresa': _assistenciaMedicaEmpresa,
-                    'funcionario': _assistenciaMedicaFuncionario,
+                    'empresa': _assistenciaMedicaEmpresa ?? 0,
+                    'funcionario': _assistenciaMedicaFuncionario ?? 0,
                   },
                   'servicoAmbulatorial': {
-                    'empresa': _servicoAmbulatorialEmpresa,
-                    'funcionario': _servicoAmbulatorialFuncionario,
+                    'empresa': _servicoAmbulatorialEmpresa ?? 0,
+                    'funcionario': _servicoAmbulatorialFuncionario ?? 0,
                   },
                 },
                 'assistenciaOdontologica': {
                   'assistenciaOdontologica': {
-                    'empresa': _assistenciaOdontologicaEmpresa,
-                    'funcionario': _assistenciaOdontologicaFuncionario,
+                    'empresa': _assistenciaOdontologicaEmpresa ?? 0,
+                    'funcionario': _assistenciaOdontologicaFuncionario ?? 0,
                   },
                   'servicoAmbulatorialProprio': {
-                    'empresa': _servicoAmbulatorialProprioEmpresa,
-                    'funcionario': _servicoAmbulatorialProprioFuncionario,
+                    'empresa': _servicoAmbulatorialProprioEmpresa ?? 0,
+                    'funcionario': _servicoAmbulatorialProprioFuncionario ?? 0,
                   },
                 },
                 'alimentacao': {
                   'restaurante': {
-                    'empresa': _restauranteEmpresa,
-                    'funcionario': _restauranteFuncionario,
+                    'empresa': _restauranteEmpresa ?? 0,
+                    'funcionario': _restauranteFuncionario ?? 0,
                   },
                   'valeRefeicao': {
-                    'empresa': _valeRefeicaoEmpresa,
-                    'funcionario': _valeRefeicaoFuncionario,
+                    'empresa': _valeRefeicaoEmpresa ?? 0,
+                    'funcionario': _valeRefeicaoFuncionario ?? 0,
                   },
                   'cestaBasica': {
-                    'empresa': _cestaBasicaEmpresa,
-                    'funcionario': _cestaBasicaFuncionario,
+                    'empresa': _cestaBasicaEmpresa ?? 0,
+                    'funcionario': _cestaBasicaFuncionario ?? 0,
                   },
                   'valeAlimentacao': {
-                    'empresa': _valeAlimentacaoEmpresa,
-                    'funcionario': _valeAlimentacaoFuncionario,
+                    'empresa': _valeAlimentacaoEmpresa ?? 0,
+                    'funcionario': _valeAlimentacaoFuncionario ?? 0,
                   },
                 },
                 'transporte': {
-                  'valeTransporte': _valeTransporte,
-                  'frotaPropria': _frotaPropria,
-                  'frotaTerceirizada': _frotaTerceirizada,
+                  'valeTransporte': _valeTransporte ?? 0,
+                  'frotaPropria': _frotaPropria ?? 0,
+                  'frotaTerceirizada': _frotaTerceirizada ?? 0,
                 },
                 'seguroDeVida': {
                   'seguroDeVidaEmGrupo': {
-                    'empresa': _seguroDeVidaEmGrupoEmpresa,
-                    'funcionario': _seguroDeVidaEmGrupoFuncionario,
+                    'empresa': _seguroDeVidaEmGrupoEmpresa ?? 0,
+                    'funcionario': _seguroDeVidaEmGrupoFuncionario ?? 0,
                   },
                   'seguroAcidentesDeTrabalho': {
-                    'empresa': _seguroAcidentesDeTrabalhoEmpresa,
-                    'funcionario': _seguroAcidentesDeTrabalhoFuncionario,
+                    'empresa': _seguroAcidentesDeTrabalhoEmpresa ?? 0,
+                    'funcionario': _seguroAcidentesDeTrabalhoFuncionario ?? 0,
                   },
                 }
               };
@@ -252,6 +268,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       decoration: const InputDecoration(
                         labelText: 'Nome da Empresa',
                       ),
+                      initialValue: _nome,
                       validator: (name) =>
                           name!.isEmpty ? 'Campo Obrigatório' : null,
                       onSaved: (name) => _nome = name,
@@ -264,21 +281,41 @@ class _RegisterPageState extends State<RegisterPage> {
                     children: [
                       SizedBox(
                         width: 220,
-                        child: TextFormField(
+                        child: SelectFormField(
                           decoration: const InputDecoration(
                             labelText: 'Ramo da Empresa',
                           ),
-                          validator: (business) =>
-                              business!.isEmpty ? 'Campo Obrigatório' : null,
-                          onSaved: (business) => _ramo = business,
+                          type: SelectFormFieldType.dropdown,
+                          initialValue: _ramo,
+                          items: _getRamosAtuacao(),
+                          validator: (ramo) =>
+                              ramo!.isEmpty ? 'Campo Obrigatório' : null,
+                          onSaved: (ramo) => _ramo = ramo,
+                          onChanged: (ramo) => setState(() {
+                            _ramo = ramo;
+                          }),
                         ),
                       ),
+                      if (_ramo == 'Outro')
+                        SizedBox(
+                          width: 220,
+                          child: TextFormField(
+                            decoration: const InputDecoration(
+                              labelText: 'Nome do Ramo',
+                            ),
+                            initialValue: _outroRamo,
+                            validator: (outroRamo) =>
+                                outroRamo!.isEmpty ? 'Campo Obrigatório' : null,
+                            onSaved: (outroRamo) => _outroRamo = outroRamo,
+                          ),
+                        ),
                       SizedBox(
                         width: 220,
                         child: TextFormField(
                           decoration: const InputDecoration(
                             labelText: 'No. de Funcionários',
                           ),
+                          initialValue: _numeroDeFuncionarios?.toString(),
                           keyboardType: TextInputType.number,
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
@@ -317,6 +354,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           validator: (invoicing) =>
                               invoicing!.isEmpty ? 'Campo Obrigatório' : null,
                           onSaved: (invoicing) => _porte = invoicing,
+                          onChanged: (invoicing) => setState(() {
+                            _porte = invoicing;
+                          }),
                         ),
                       ),
                     ],
@@ -332,6 +372,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: const InputDecoration(
                             labelText: 'Data Base',
                           ),
+                          initialValue: _dataBase != null
+                              ? DateTime.parse(_dataBase!)
+                              : null,
                           format: DateFormat("dd/MM/yyyy"),
                           validator: (baseDate) =>
                               baseDate == null ? 'Campo Obrigatório' : null,
@@ -352,6 +395,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: const InputDecoration(
                             labelText: 'Data das Informações',
                           ),
+                          initialValue: _dataDosDados != null
+                              ? DateTime.parse(_dataDosDados!)
+                              : null,
                           format: DateFormat("dd/MM/yyyy"),
                           validator: (infoDate) =>
                               infoDate == null ? 'Campo Obrigatório' : null,
@@ -379,6 +425,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: const InputDecoration(
                             labelText: 'Contato',
                           ),
+                          initialValue: _contato,
                           validator: (contact) =>
                               contact!.isEmpty ? 'Campo Obrigatório' : null,
                           onSaved: (contact) => _contato = contact,
@@ -390,6 +437,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: const InputDecoration(
                             labelText: 'Telefone',
                           ),
+                          initialValue: _telefone,
                           inputFormatters: [
                             MaskTextInputFormatter(
                               mask: '(##) # ########',
@@ -438,6 +486,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _assistenciaMedicaEmpresa?.toString() ?? '',
                               onChanged: (name) => setState(() {
@@ -451,6 +503,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _assistenciaMedicaFuncionario?.toString() ??
                                       '',
@@ -475,6 +531,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _servicoAmbulatorialEmpresa?.toString() ?? '',
                               onChanged: (name) => setState(() {
@@ -489,6 +549,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _servicoAmbulatorialFuncionario?.toString() ??
                                       '',
@@ -524,6 +588,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _assistenciaOdontologicaEmpresa?.toString() ??
                                       '',
@@ -539,6 +607,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue: _assistenciaOdontologicaFuncionario
                                       ?.toString() ??
                                   '',
@@ -563,6 +635,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue: _servicoAmbulatorialProprioEmpresa
                                       ?.toString() ??
                                   '',
@@ -578,6 +654,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _servicoAmbulatorialProprioFuncionario
                                           ?.toString() ??
@@ -613,6 +693,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _restauranteEmpresa?.toString() ?? '',
                               onChanged: (name) => setState(() {
@@ -626,6 +710,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _restauranteFuncionario?.toString() ?? '',
                               onChanged: (name) => setState(() {
@@ -648,6 +736,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _valeRefeicaoEmpresa?.toString() ?? '',
                               onChanged: (name) => setState(() {
@@ -661,6 +753,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _valeRefeicaoFuncionario?.toString() ?? '',
                               onChanged: (name) => setState(() {
@@ -683,6 +779,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _cestaBasicaEmpresa?.toString() ?? '',
                               onChanged: (name) => setState(() {
@@ -696,6 +796,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _cestaBasicaFuncionario?.toString() ?? '',
                               onChanged: (name) => setState(() {
@@ -718,6 +822,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _valeAlimentacaoEmpresa?.toString() ?? '',
                               onChanged: (name) => setState(() {
@@ -731,6 +839,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _valeAlimentacaoFuncionario?.toString() ?? '',
                               onChanged: (name) => setState(() {
@@ -760,6 +872,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: const InputDecoration(
                             labelText: 'Funcionário',
                           ),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                           initialValue: _valeTransporte?.toString() ?? '',
                           onChanged: (name) => setState(() {
                             _valeTransporte = int.tryParse(name);
@@ -774,6 +890,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: const InputDecoration(
                             labelText: 'Funcionário',
                           ),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                           initialValue: _frotaPropria?.toString() ?? '',
                           onChanged: (name) => setState(() {
                             _frotaPropria = int.tryParse(name);
@@ -789,6 +909,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: const InputDecoration(
                             labelText: 'Funcionário',
                           ),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                           initialValue: _frotaTerceirizada?.toString() ?? '',
                           onChanged: (name) => setState(() {
                             _frotaTerceirizada = int.tryParse(name);
@@ -818,6 +942,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _seguroDeVidaEmGrupoEmpresa?.toString() ?? '',
                               onChanged: (name) => setState(() {
@@ -832,6 +960,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _seguroDeVidaEmGrupoFuncionario?.toString() ??
                                       '',
@@ -856,6 +988,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue: _seguroAcidentesDeTrabalhoEmpresa
                                       ?.toString() ??
                                   '',
@@ -871,6 +1007,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               initialValue:
                                   _seguroAcidentesDeTrabalhoFuncionario
                                           ?.toString() ??
@@ -1042,6 +1182,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                 decoration: const InputDecoration(
                                   labelText: 'Outros',
                                 ),
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
                                 onSaved: (outros) => _outros = outros,
                               ),
                             ),
@@ -1105,6 +1249,25 @@ class _RegisterPageState extends State<RegisterPage> {
         ],
       ),
     );
+  }
+
+  List<Map<String, dynamic>> _getRamosAtuacao() {
+    final ramos = ramosAtuacaoDisponiveis
+        .map(
+          (ramo) => {
+            'value': ramo as dynamic,
+            'label': ramo as dynamic,
+          },
+        )
+        .toList();
+
+    return [
+      ...ramos,
+      {
+        'value': 'Outro',
+        'label': 'Outro',
+      }
+    ];
   }
 
   List<Map<String, dynamic>> _getCargos() {
