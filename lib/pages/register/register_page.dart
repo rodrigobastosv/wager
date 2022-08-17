@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:select_form_field/select_form_field.dart';
 import 'package:wager/pages/layout/w_scaffold.dart';
@@ -25,7 +26,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String? _ramo;
   String? _outroRamo;
   String? _telefone;
-  String? _dataBase;
+  DateTime? _dataBase;
   String? _dataDosDados;
   String? _faturamentoAnual;
   int? _numeroDeFuncionarios;
@@ -147,7 +148,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 'contato': _contato,
                 'ramo': _ramo == 'Outro' ? _outroRamo : _ramo,
                 'telefone': _telefone,
-                'dataBase': _dataBase,
+                'dataBase': '${_dataBase!.month}/${_dataBase!.year}',
                 'dataDosDados': _dataDosDados,
                 'faturamentoAnual': _faturamentoAnual,
                 'numeroDeFuncionarios': _numeroDeFuncionarios,
@@ -375,20 +376,18 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: const InputDecoration(
                             labelText: 'Data Base',
                           ),
-                          initialValue: _dataBase != null
-                              ? DateTime.parse(_dataBase!)
-                              : null,
-                          format: DateFormat("dd/MM/yyyy"),
+                          initialValue: _dataBase,
+                          format: DateFormat("MM/yyyy"),
                           validator: (baseDate) =>
                               baseDate == null ? 'Campo Obrigatório' : null,
-                          onSaved: (baseDate) =>
-                              _dataBase = baseDate.toString(),
-                          onShowPicker: (_, currentValue) => showDatePicker(
+                          onSaved: (baseDate) => _dataBase = baseDate,
+                          onShowPicker: (_, currentValue) =>
+                              showMonthYearPicker(
                             context: context,
                             locale: const Locale('pt', 'BR'),
-                            firstDate: DateTime(1900),
                             initialDate: currentValue ?? DateTime.now(),
-                            lastDate: DateTime(2100),
+                            firstDate: DateTime(2022),
+                            lastDate: DateTime(2099),
                           ),
                         ),
                       ),
@@ -1162,7 +1161,7 @@ Ex.: Mecânicos Manutenção
                               width: 150,
                               child: TextFormField(
                                 decoration: const InputDecoration(
-                                  labelText: 'Salário',
+                                  labelText: 'Salário (R\$)',
                                 ),
                                 keyboardType: TextInputType.number,
                                 inputFormatters: [
@@ -1184,14 +1183,14 @@ Informar em valores (R\$) quaisquer adicionais recebidos pelo ocupante. Informar
                                 width: 150,
                                 child: TextFormField(
                                   decoration: const InputDecoration(
-                                    labelText: 'Bonificações',
+                                    labelText: 'Bonificações (R\$)',
                                   ),
                                   keyboardType: TextInputType.number,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.digitsOnly,
                                   ],
-                                  onSaved: (bonificacoes) =>
-                                      _bonificacoes = int.tryParse(bonificacoes!),
+                                  onSaved: (bonificacoes) => _bonificacoes =
+                                      int.tryParse(bonificacoes!),
                                 ),
                               ),
                             ),
@@ -1201,11 +1200,8 @@ Informar em valores (R\$) quaisquer adicionais recebidos pelo ocupante. Informar
                                 decoration: const InputDecoration(
                                   labelText: 'Observações',
                                 ),
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly
-                                ],
-                                onSaved: (observacoes) => _observacoes = observacoes,
+                                onSaved: (observacoes) =>
+                                    _observacoes = observacoes,
                               ),
                             ),
                           ],

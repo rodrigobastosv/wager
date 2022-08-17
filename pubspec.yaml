@@ -24,6 +24,7 @@ dependencies:
   mask_text_input_formatter: ^2.4.0
   panara_dialogs: ^0.1.2
   select_form_field: ^2.2.0
+  month_year_picker: ^0.2.0+2
 
 dev_dependencies:
   flutter_test:
