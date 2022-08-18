@@ -9,6 +9,8 @@ import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:select_form_field/select_form_field.dart';
 import 'package:wager/pages/layout/w_scaffold.dart';
 
+import 'register_utils.dart';
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -34,33 +36,33 @@ class _RegisterPageState extends State<RegisterPage> {
 
   /// Beneficios
   // Assistencia Medica
-  int? _assistenciaMedicaEmpresa;
-  int? _assistenciaMedicaFuncionario;
-  int? _servicoAmbulatorialEmpresa;
-  int? _servicoAmbulatorialFuncionario;
+  String? _assistenciaMedicaEmpresa;
+  String? _assistenciaMedicaFuncionario;
+  String? _servicoAmbulatorialEmpresa;
+  String? _servicoAmbulatorialFuncionario;
   // Assistencia Odontologica
-  int? _assistenciaOdontologicaEmpresa;
-  int? _assistenciaOdontologicaFuncionario;
-  int? _servicoAmbulatorialProprioEmpresa;
-  int? _servicoAmbulatorialProprioFuncionario;
+  String? _assistenciaOdontologicaEmpresa;
+  String? _assistenciaOdontologicaFuncionario;
+  String? _servicoAmbulatorialProprioEmpresa;
+  String? _servicoAmbulatorialProprioFuncionario;
   // Alimentacao
-  int? _restauranteEmpresa;
-  int? _restauranteFuncionario;
-  int? _valeRefeicaoEmpresa;
-  int? _valeRefeicaoFuncionario;
-  int? _cestaBasicaEmpresa;
-  int? _cestaBasicaFuncionario;
-  int? _valeAlimentacaoEmpresa;
-  int? _valeAlimentacaoFuncionario;
+  String? _restauranteEmpresa;
+  String? _restauranteFuncionario;
+  String? _valeRefeicaoEmpresa;
+  String? _valeRefeicaoFuncionario;
+  String? _cestaBasicaEmpresa;
+  String? _cestaBasicaFuncionario;
+  String? _valeAlimentacaoEmpresa;
+  String? _valeAlimentacaoFuncionario;
   // Transporte
-  int? _valeTransporte;
-  int? _frotaPropria;
-  int? _frotaTerceirizada;
+  String? _valeTransporte;
+  String? _frotaPropria;
+  String? _frotaTerceirizada;
   // Seguro de Vida
-  int? _seguroDeVidaEmGrupoEmpresa;
-  int? _seguroDeVidaEmGrupoFuncionario;
-  int? _seguroAcidentesDeTrabalhoEmpresa;
-  int? _seguroAcidentesDeTrabalhoFuncionario;
+  String? _seguroDeVidaEmGrupoEmpresa;
+  String? _seguroDeVidaEmGrupoFuncionario;
+  String? _seguroAcidentesDeTrabalhoEmpresa;
+  String? _seguroAcidentesDeTrabalhoFuncionario;
   Map<String, dynamic>? _informacoesBeneficios;
 
   /// Cargos
@@ -166,55 +168,57 @@ class _RegisterPageState extends State<RegisterPage> {
               _informacoesBeneficios = {
                 'assistenciaMedica': {
                   'assistenciaMedica': {
-                    'empresa': _assistenciaMedicaEmpresa ?? 0,
-                    'funcionario': _assistenciaMedicaFuncionario ?? 0,
+                    'empresa': _assistenciaMedicaEmpresa ?? '0%',
+                    'funcionario': _assistenciaMedicaFuncionario ?? '0%',
                   },
                   'servicoAmbulatorial': {
-                    'empresa': _servicoAmbulatorialEmpresa ?? 0,
-                    'funcionario': _servicoAmbulatorialFuncionario ?? 0,
+                    'empresa': _servicoAmbulatorialEmpresa ?? '0%',
+                    'funcionario': _servicoAmbulatorialFuncionario ?? '0%',
                   },
                 },
                 'assistenciaOdontologica': {
                   'assistenciaOdontologica': {
-                    'empresa': _assistenciaOdontologicaEmpresa ?? 0,
-                    'funcionario': _assistenciaOdontologicaFuncionario ?? 0,
+                    'empresa': _assistenciaOdontologicaEmpresa ?? '0%',
+                    'funcionario': _assistenciaOdontologicaFuncionario ?? '0%',
                   },
                   'servicoAmbulatorialProprio': {
-                    'empresa': _servicoAmbulatorialProprioEmpresa ?? 0,
-                    'funcionario': _servicoAmbulatorialProprioFuncionario ?? 0,
+                    'empresa': _servicoAmbulatorialProprioEmpresa ?? '0%',
+                    'funcionario':
+                        _servicoAmbulatorialProprioFuncionario ?? '0%',
                   },
                 },
                 'alimentacao': {
                   'restaurante': {
-                    'empresa': _restauranteEmpresa ?? 0,
-                    'funcionario': _restauranteFuncionario ?? 0,
+                    'empresa': _restauranteEmpresa ?? '0%',
+                    'funcionario': _restauranteFuncionario ?? '0%',
                   },
                   'valeRefeicao': {
-                    'empresa': _valeRefeicaoEmpresa ?? 0,
-                    'funcionario': _valeRefeicaoFuncionario ?? 0,
+                    'empresa': _valeRefeicaoEmpresa ?? '0%',
+                    'funcionario': _valeRefeicaoFuncionario ?? '0%',
                   },
                   'cestaBasica': {
-                    'empresa': _cestaBasicaEmpresa ?? 0,
-                    'funcionario': _cestaBasicaFuncionario ?? 0,
+                    'empresa': _cestaBasicaEmpresa ?? '0%',
+                    'funcionario': _cestaBasicaFuncionario ?? '0%',
                   },
                   'valeAlimentacao': {
-                    'empresa': _valeAlimentacaoEmpresa ?? 0,
-                    'funcionario': _valeAlimentacaoFuncionario ?? 0,
+                    'empresa': _valeAlimentacaoEmpresa ?? '0%',
+                    'funcionario': _valeAlimentacaoFuncionario ?? '0%',
                   },
                 },
                 'transporte': {
-                  'valeTransporte': _valeTransporte ?? 0,
-                  'frotaPropria': _frotaPropria ?? 0,
-                  'frotaTerceirizada': _frotaTerceirizada ?? 0,
+                  'valeTransporte': _valeTransporte ?? '0%',
+                  'frotaPropria': _frotaPropria ?? '0%',
+                  'frotaTerceirizada': _frotaTerceirizada ?? '0%',
                 },
                 'seguroDeVida': {
                   'seguroDeVidaEmGrupo': {
-                    'empresa': _seguroDeVidaEmGrupoEmpresa ?? 0,
-                    'funcionario': _seguroDeVidaEmGrupoFuncionario ?? 0,
+                    'empresa': _seguroDeVidaEmGrupoEmpresa ?? '0%',
+                    'funcionario': _seguroDeVidaEmGrupoFuncionario ?? '0%',
                   },
                   'seguroAcidentesDeTrabalho': {
-                    'empresa': _seguroAcidentesDeTrabalhoEmpresa ?? 0,
-                    'funcionario': _seguroAcidentesDeTrabalhoFuncionario ?? 0,
+                    'empresa': _seguroAcidentesDeTrabalhoEmpresa ?? '0%',
+                    'funcionario':
+                        _seguroAcidentesDeTrabalhoFuncionario ?? '0%',
                   },
                 }
               };
@@ -484,38 +488,71 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: [
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                labelText: 'Empresa',
-                              ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue:
-                                  _assistenciaMedicaEmpresa?.toString() ?? '',
-                              onChanged: (name) => setState(() {
-                                _assistenciaMedicaEmpresa = int.tryParse(name);
-                              }),
-                            ),
+                            child: SelectFormField(
+                                key: UniqueKey(),
+                                decoration: const InputDecoration(
+                                  labelText: 'Empresa',
+                                ),
+                                type: SelectFormFieldType.dropdown,
+                                items: getValoresBonificacoes(),
+                                initialValue: _assistenciaMedicaEmpresa,
+                                onChanged: (assistenciaMedicaEmpresa) {
+                                  var assistenciaMedicaFuncionario = '';
+                                  if (assistenciaMedicaEmpresa == '100%') {
+                                    assistenciaMedicaFuncionario = '0%';
+                                  } else if (assistenciaMedicaEmpresa ==
+                                      '75%') {
+                                    assistenciaMedicaFuncionario = '25%';
+                                  } else if (assistenciaMedicaEmpresa ==
+                                      '50%') {
+                                    assistenciaMedicaFuncionario = '50%';
+                                  } else if (assistenciaMedicaEmpresa ==
+                                      '25%') {
+                                    assistenciaMedicaFuncionario = '75%';
+                                  } else {
+                                    assistenciaMedicaFuncionario = '100%';
+                                  }
+                                  setState(() {
+                                    _assistenciaMedicaEmpresa =
+                                        assistenciaMedicaEmpresa;
+                                    _assistenciaMedicaFuncionario =
+                                        assistenciaMedicaFuncionario;
+                                  });
+                                }),
                           ),
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue:
-                                  _assistenciaMedicaFuncionario?.toString() ??
-                                      '',
-                              onChanged: (name) => setState(() {
-                                _assistenciaMedicaFuncionario =
-                                    int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _assistenciaMedicaFuncionario,
+                              onChanged: (assistenciaMedicaFuncionario) {
+                                var assistenciaMedicaEmpresa = '';
+                                if (assistenciaMedicaFuncionario == '100%') {
+                                  assistenciaMedicaEmpresa = '0%';
+                                } else if (assistenciaMedicaFuncionario ==
+                                    '75%') {
+                                  assistenciaMedicaEmpresa = '25%';
+                                } else if (assistenciaMedicaFuncionario ==
+                                    '50%') {
+                                  assistenciaMedicaEmpresa = '50%';
+                                } else if (assistenciaMedicaFuncionario ==
+                                    '25%') {
+                                  assistenciaMedicaEmpresa = '75%';
+                                } else {
+                                  assistenciaMedicaEmpresa = '100%';
+                                }
+                                setState(() {
+                                  _assistenciaMedicaFuncionario =
+                                      assistenciaMedicaFuncionario;
+                                  _assistenciaMedicaEmpresa =
+                                      assistenciaMedicaEmpresa;
+                                });
+                              },
                             ),
                           ),
                         ],
@@ -529,39 +566,72 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: [
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue:
-                                  _servicoAmbulatorialEmpresa?.toString() ?? '',
-                              onChanged: (name) => setState(() {
-                                _servicoAmbulatorialEmpresa =
-                                    int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _servicoAmbulatorialEmpresa,
+                              onChanged: (servicoAmbulatorialEmpresa) {
+                                var servicoAmbulatorialFuncionario = '';
+                                if (servicoAmbulatorialEmpresa == '100%') {
+                                  servicoAmbulatorialFuncionario = '0%';
+                                } else if (servicoAmbulatorialEmpresa ==
+                                    '75%') {
+                                  servicoAmbulatorialFuncionario = '25%';
+                                } else if (servicoAmbulatorialEmpresa ==
+                                    '50%') {
+                                  servicoAmbulatorialFuncionario = '50%';
+                                } else if (servicoAmbulatorialEmpresa ==
+                                    '25%') {
+                                  servicoAmbulatorialFuncionario = '75%';
+                                } else {
+                                  servicoAmbulatorialFuncionario = '100%';
+                                }
+                                setState(() {
+                                  _servicoAmbulatorialEmpresa =
+                                      servicoAmbulatorialEmpresa;
+                                  _servicoAmbulatorialFuncionario =
+                                      servicoAmbulatorialFuncionario;
+                                });
+                              },
                             ),
                           ),
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue:
-                                  _servicoAmbulatorialFuncionario?.toString() ??
-                                      '',
-                              onChanged: (name) => setState(() {
-                                _servicoAmbulatorialFuncionario =
-                                    int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _servicoAmbulatorialFuncionario,
+                              onChanged: (servicoAmbulatorialFuncionario) {
+                                var servicoAmbulatorialEmpresa = '';
+                                if (servicoAmbulatorialFuncionario == '100%') {
+                                  servicoAmbulatorialEmpresa = '0%';
+                                } else if (servicoAmbulatorialFuncionario ==
+                                    '75%') {
+                                  servicoAmbulatorialEmpresa = '25%';
+                                } else if (servicoAmbulatorialFuncionario ==
+                                    '50%') {
+                                  servicoAmbulatorialEmpresa = '50%';
+                                } else if (servicoAmbulatorialFuncionario ==
+                                    '25%') {
+                                  servicoAmbulatorialEmpresa = '75%';
+                                } else {
+                                  servicoAmbulatorialEmpresa = '100%';
+                                }
+                                setState(() {
+                                  _servicoAmbulatorialFuncionario =
+                                      servicoAmbulatorialFuncionario;
+                                  _servicoAmbulatorialEmpresa =
+                                      servicoAmbulatorialEmpresa;
+                                });
+                              },
                             ),
                           ),
                         ],
@@ -586,40 +656,73 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: [
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue:
-                                  _assistenciaOdontologicaEmpresa?.toString() ??
-                                      '',
-                              onChanged: (name) => setState(() {
-                                _assistenciaOdontologicaEmpresa =
-                                    int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _assistenciaOdontologicaEmpresa,
+                              onChanged: (assistenciaOdontologicaEmpresa) {
+                                var assistenciaOdontologicaFuncionario = '';
+                                if (assistenciaOdontologicaEmpresa == '100%') {
+                                  assistenciaOdontologicaFuncionario = '0%';
+                                } else if (assistenciaOdontologicaEmpresa ==
+                                    '75%') {
+                                  assistenciaOdontologicaFuncionario = '25%';
+                                } else if (assistenciaOdontologicaEmpresa ==
+                                    '50%') {
+                                  assistenciaOdontologicaFuncionario = '50%';
+                                } else if (assistenciaOdontologicaEmpresa ==
+                                    '25%') {
+                                  assistenciaOdontologicaFuncionario = '75%';
+                                } else {
+                                  assistenciaOdontologicaFuncionario = '100%';
+                                }
+                                setState(() {
+                                  _assistenciaOdontologicaEmpresa =
+                                      assistenciaOdontologicaEmpresa;
+                                  _assistenciaOdontologicaFuncionario =
+                                      assistenciaOdontologicaFuncionario;
+                                });
+                              },
                             ),
                           ),
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue: _assistenciaOdontologicaFuncionario
-                                      ?.toString() ??
-                                  '',
-                              onChanged: (name) => setState(() {
-                                _assistenciaOdontologicaFuncionario =
-                                    int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _assistenciaOdontologicaFuncionario,
+                              onChanged: (assistenciaOdontologicaFuncionario) {
+                                var assistenciaOdontologicaEmpresa = '';
+                                if (assistenciaOdontologicaFuncionario ==
+                                    '100%') {
+                                  assistenciaOdontologicaEmpresa = '0%';
+                                } else if (assistenciaOdontologicaFuncionario ==
+                                    '75%') {
+                                  assistenciaOdontologicaEmpresa = '25%';
+                                } else if (assistenciaOdontologicaFuncionario ==
+                                    '50%') {
+                                  assistenciaOdontologicaEmpresa = '50%';
+                                } else if (assistenciaOdontologicaFuncionario ==
+                                    '25%') {
+                                  assistenciaOdontologicaEmpresa = '75%';
+                                } else {
+                                  assistenciaOdontologicaEmpresa = '100%';
+                                }
+                                setState(() {
+                                  _assistenciaOdontologicaFuncionario =
+                                      assistenciaOdontologicaFuncionario;
+                                  _assistenciaOdontologicaEmpresa =
+                                      assistenciaOdontologicaEmpresa;
+                                });
+                              },
                             ),
                           ),
                         ],
@@ -633,41 +736,77 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: [
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue: _servicoAmbulatorialProprioEmpresa
-                                      ?.toString() ??
-                                  '',
-                              onChanged: (name) => setState(() {
-                                _servicoAmbulatorialProprioEmpresa =
-                                    int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _servicoAmbulatorialProprioEmpresa,
+                              onChanged: (servicoAmbulatorialProprioEmpresa) {
+                                var servicoAmbulatorialProprioFuncionario = '';
+                                if (servicoAmbulatorialProprioEmpresa ==
+                                    '100%') {
+                                  servicoAmbulatorialProprioFuncionario = '0%';
+                                } else if (servicoAmbulatorialProprioEmpresa ==
+                                    '75%') {
+                                  servicoAmbulatorialProprioFuncionario = '25%';
+                                } else if (servicoAmbulatorialProprioEmpresa ==
+                                    '50%') {
+                                  servicoAmbulatorialProprioFuncionario = '50%';
+                                } else if (servicoAmbulatorialProprioEmpresa ==
+                                    '25%') {
+                                  servicoAmbulatorialProprioFuncionario = '75%';
+                                } else {
+                                  servicoAmbulatorialProprioFuncionario =
+                                      '100%';
+                                }
+                                setState(() {
+                                  _servicoAmbulatorialProprioEmpresa =
+                                      servicoAmbulatorialProprioEmpresa;
+                                  _servicoAmbulatorialProprioFuncionario =
+                                      servicoAmbulatorialProprioFuncionario;
+                                });
+                              },
                             ),
                           ),
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
                               initialValue:
-                                  _servicoAmbulatorialProprioFuncionario
-                                          ?.toString() ??
-                                      '',
-                              onChanged: (name) => setState(() {
-                                _servicoAmbulatorialProprioFuncionario =
-                                    int.tryParse(name);
-                              }),
+                                  _servicoAmbulatorialProprioFuncionario,
+                              onChanged:
+                                  (servicoAmbulatorialProprioFuncionario) {
+                                var servicoAmbulatorialProprioEmpresa = '';
+                                if (servicoAmbulatorialProprioFuncionario ==
+                                    '100%') {
+                                  servicoAmbulatorialProprioEmpresa = '0%';
+                                } else if (servicoAmbulatorialProprioFuncionario ==
+                                    '75%') {
+                                  servicoAmbulatorialProprioEmpresa = '25%';
+                                } else if (servicoAmbulatorialProprioFuncionario ==
+                                    '50%') {
+                                  servicoAmbulatorialProprioEmpresa = '50%';
+                                } else if (servicoAmbulatorialProprioFuncionario ==
+                                    '25%') {
+                                  servicoAmbulatorialProprioEmpresa = '75%';
+                                } else {
+                                  servicoAmbulatorialProprioEmpresa = '100%';
+                                }
+                                setState(() {
+                                  _servicoAmbulatorialProprioFuncionario =
+                                      servicoAmbulatorialProprioFuncionario;
+                                  _servicoAmbulatorialProprioEmpresa =
+                                      servicoAmbulatorialProprioEmpresa;
+                                });
+                              },
                             ),
                           ),
                         ],
@@ -691,36 +830,64 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: [
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue:
-                                  _restauranteEmpresa?.toString() ?? '',
-                              onChanged: (name) => setState(() {
-                                _restauranteEmpresa = int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _restauranteEmpresa,
+                              onChanged: (restauranteEmpresa) {
+                                var restauranteFuncionario = '';
+                                if (restauranteEmpresa == '100%') {
+                                  restauranteFuncionario = '0%';
+                                } else if (restauranteEmpresa == '75%') {
+                                  restauranteFuncionario = '25%';
+                                } else if (restauranteEmpresa == '50%') {
+                                  restauranteFuncionario = '50%';
+                                } else if (restauranteEmpresa == '25%') {
+                                  restauranteFuncionario = '75%';
+                                } else {
+                                  restauranteFuncionario = '100%';
+                                }
+                                setState(() {
+                                  _restauranteEmpresa = restauranteEmpresa;
+                                  _restauranteFuncionario =
+                                      restauranteFuncionario;
+                                });
+                              },
                             ),
                           ),
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue:
-                                  _restauranteFuncionario?.toString() ?? '',
-                              onChanged: (name) => setState(() {
-                                _restauranteFuncionario = int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _restauranteFuncionario,
+                              onChanged: (restauranteFuncionario) {
+                                var restauranteEmpresa = '';
+                                if (restauranteFuncionario == '100%') {
+                                  restauranteEmpresa = '0%';
+                                } else if (restauranteFuncionario == '75%') {
+                                  restauranteEmpresa = '25%';
+                                } else if (restauranteFuncionario == '50%') {
+                                  restauranteEmpresa = '50%';
+                                } else if (restauranteFuncionario == '25%') {
+                                  restauranteEmpresa = '75%';
+                                } else {
+                                  restauranteEmpresa = '100%';
+                                }
+                                setState(() {
+                                  _restauranteFuncionario =
+                                      restauranteFuncionario;
+                                  _restauranteEmpresa = restauranteEmpresa;
+                                });
+                              },
                             ),
                           ),
                         ],
@@ -734,36 +901,64 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: [
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue:
-                                  _valeRefeicaoEmpresa?.toString() ?? '',
-                              onChanged: (name) => setState(() {
-                                _valeRefeicaoEmpresa = int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _valeRefeicaoEmpresa,
+                              onChanged: (valeRefeicaoEmpresa) {
+                                var valeRefeicaoFuncionario = '';
+                                if (valeRefeicaoEmpresa == '100%') {
+                                  valeRefeicaoFuncionario = '0%';
+                                } else if (valeRefeicaoEmpresa == '75%') {
+                                  valeRefeicaoFuncionario = '25%';
+                                } else if (valeRefeicaoEmpresa == '50%') {
+                                  valeRefeicaoFuncionario = '50%';
+                                } else if (valeRefeicaoEmpresa == '25%') {
+                                  valeRefeicaoFuncionario = '75%';
+                                } else {
+                                  valeRefeicaoFuncionario = '100%';
+                                }
+                                setState(() {
+                                  _valeRefeicaoEmpresa = valeRefeicaoEmpresa;
+                                  _valeRefeicaoFuncionario =
+                                      valeRefeicaoFuncionario;
+                                });
+                              },
                             ),
                           ),
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue:
-                                  _valeRefeicaoFuncionario?.toString() ?? '',
-                              onChanged: (name) => setState(() {
-                                _valeRefeicaoFuncionario = int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _valeRefeicaoFuncionario,
+                              onChanged: (valeRefeicaoFuncionario) {
+                                var valeRefeicaoEmpresa = '';
+                                if (valeRefeicaoFuncionario == '100%') {
+                                  valeRefeicaoEmpresa = '0%';
+                                } else if (valeRefeicaoFuncionario == '75%') {
+                                  valeRefeicaoEmpresa = '25%';
+                                } else if (valeRefeicaoFuncionario == '50%') {
+                                  valeRefeicaoEmpresa = '50%';
+                                } else if (valeRefeicaoFuncionario == '25%') {
+                                  valeRefeicaoEmpresa = '75%';
+                                } else {
+                                  valeRefeicaoEmpresa = '100%';
+                                }
+                                setState(() {
+                                  _valeRefeicaoFuncionario =
+                                      valeRefeicaoFuncionario;
+                                  _valeRefeicaoEmpresa = valeRefeicaoEmpresa;
+                                });
+                              },
                             ),
                           ),
                         ],
@@ -777,36 +972,64 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: [
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue:
-                                  _cestaBasicaEmpresa?.toString() ?? '',
-                              onChanged: (name) => setState(() {
-                                _cestaBasicaEmpresa = int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _cestaBasicaEmpresa,
+                              onChanged: (cestaBasicaEmpresa) {
+                                var cestaBasicaFuncionario = '';
+                                if (cestaBasicaEmpresa == '100%') {
+                                  cestaBasicaFuncionario = '0%';
+                                } else if (cestaBasicaEmpresa == '75%') {
+                                  cestaBasicaFuncionario = '25%';
+                                } else if (cestaBasicaEmpresa == '50%') {
+                                  cestaBasicaFuncionario = '50%';
+                                } else if (cestaBasicaEmpresa == '25%') {
+                                  cestaBasicaFuncionario = '75%';
+                                } else {
+                                  cestaBasicaFuncionario = '100%';
+                                }
+                                setState(() {
+                                  _cestaBasicaEmpresa = cestaBasicaEmpresa;
+                                  _cestaBasicaFuncionario =
+                                      cestaBasicaFuncionario;
+                                });
+                              },
                             ),
                           ),
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue:
-                                  _cestaBasicaFuncionario?.toString() ?? '',
-                              onChanged: (name) => setState(() {
-                                _cestaBasicaFuncionario = int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _cestaBasicaFuncionario,
+                              onChanged: (cestaBasicaFuncionario) {
+                                var cestaBasicaEmpresa = '';
+                                if (cestaBasicaFuncionario == '100%') {
+                                  cestaBasicaEmpresa = '0%';
+                                } else if (cestaBasicaFuncionario == '75%') {
+                                  cestaBasicaEmpresa = '25%';
+                                } else if (cestaBasicaFuncionario == '50%') {
+                                  cestaBasicaEmpresa = '50%';
+                                } else if (cestaBasicaFuncionario == '25%') {
+                                  cestaBasicaEmpresa = '75%';
+                                } else {
+                                  cestaBasicaEmpresa = '100%';
+                                }
+                                setState(() {
+                                  _cestaBasicaFuncionario =
+                                      cestaBasicaFuncionario;
+                                  _cestaBasicaEmpresa = cestaBasicaEmpresa;
+                                });
+                              },
                             ),
                           ),
                         ],
@@ -820,37 +1043,69 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: [
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue:
-                                  _valeAlimentacaoEmpresa?.toString() ?? '',
-                              onChanged: (name) => setState(() {
-                                _valeAlimentacaoEmpresa = int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _valeAlimentacaoEmpresa,
+                              onChanged: (valeAlimentacaoEmpresa) {
+                                var valeAlimentacaoFuncionario = '';
+                                if (valeAlimentacaoEmpresa == '100%') {
+                                  valeAlimentacaoFuncionario = '0%';
+                                } else if (valeAlimentacaoEmpresa == '75%') {
+                                  valeAlimentacaoFuncionario = '25%';
+                                } else if (valeAlimentacaoEmpresa == '50%') {
+                                  valeAlimentacaoFuncionario = '50%';
+                                } else if (valeAlimentacaoEmpresa == '25%') {
+                                  valeAlimentacaoFuncionario = '75%';
+                                } else {
+                                  valeAlimentacaoFuncionario = '100%';
+                                }
+                                setState(() {
+                                  _valeAlimentacaoEmpresa =
+                                      valeAlimentacaoEmpresa;
+                                  _valeAlimentacaoFuncionario =
+                                      valeAlimentacaoFuncionario;
+                                });
+                              },
                             ),
                           ),
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue:
-                                  _valeAlimentacaoFuncionario?.toString() ?? '',
-                              onChanged: (name) => setState(() {
-                                _valeAlimentacaoFuncionario =
-                                    int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _valeAlimentacaoFuncionario,
+                              onChanged: (valeAlimentacaoFuncionario) {
+                                var valeAlimentacaoEmpresa = '';
+                                if (valeAlimentacaoFuncionario == '100%') {
+                                  valeAlimentacaoEmpresa = '0%';
+                                } else if (valeAlimentacaoFuncionario ==
+                                    '75%') {
+                                  valeAlimentacaoEmpresa = '25%';
+                                } else if (valeAlimentacaoFuncionario ==
+                                    '50%') {
+                                  valeAlimentacaoEmpresa = '50%';
+                                } else if (valeAlimentacaoFuncionario ==
+                                    '25%') {
+                                  valeAlimentacaoEmpresa = '75%';
+                                } else {
+                                  valeAlimentacaoEmpresa = '100%';
+                                }
+                                setState(() {
+                                  _valeAlimentacaoFuncionario =
+                                      valeAlimentacaoFuncionario;
+                                  _valeAlimentacaoEmpresa =
+                                      valeAlimentacaoEmpresa;
+                                });
+                              },
                             ),
                           ),
                         ],
@@ -870,36 +1125,38 @@ class _RegisterPageState extends State<RegisterPage> {
                       const SizedBox(height: 6),
                       SizedBox(
                         width: 300,
-                        child: TextFormField(
+                        child: SelectFormField(
+                          key: UniqueKey(),
                           decoration: const InputDecoration(
                             labelText: 'Funcionário',
                           ),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          initialValue: _valeTransporte?.toString() ?? '',
-                          onChanged: (name) => setState(() {
-                            _valeTransporte = int.tryParse(name);
-                          }),
+                          type: SelectFormFieldType.dropdown,
+                          items: getValoresBonificacoes(),
+                          initialValue: _valeTransporte,
+                          onChanged: (valeTransporte) {
+                            setState(() {
+                              _valeTransporte = valeTransporte;
+                            });
+                          },
                         ),
                       ),
                       const SizedBox(height: 16),
                       const Text('Frota Própria:'),
                       SizedBox(
                         width: 300,
-                        child: TextFormField(
+                        child: SelectFormField(
+                          key: UniqueKey(),
                           decoration: const InputDecoration(
                             labelText: 'Funcionário',
                           ),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          initialValue: _frotaPropria?.toString() ?? '',
-                          onChanged: (name) => setState(() {
-                            _frotaPropria = int.tryParse(name);
-                          }),
+                          type: SelectFormFieldType.dropdown,
+                          items: getValoresBonificacoes(),
+                          initialValue: _frotaPropria,
+                          onChanged: (frotaPropria) {
+                            setState(() {
+                              _frotaPropria = frotaPropria;
+                            });
+                          },
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -907,18 +1164,19 @@ class _RegisterPageState extends State<RegisterPage> {
                       const SizedBox(height: 6),
                       SizedBox(
                         width: 300,
-                        child: TextFormField(
+                        child: SelectFormField(
+                          key: UniqueKey(),
                           decoration: const InputDecoration(
                             labelText: 'Funcionário',
                           ),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          initialValue: _frotaTerceirizada?.toString() ?? '',
-                          onChanged: (name) => setState(() {
-                            _frotaTerceirizada = int.tryParse(name);
-                          }),
+                          type: SelectFormFieldType.dropdown,
+                          items: getValoresBonificacoes(),
+                          initialValue: _frotaTerceirizada,
+                          onChanged: (frotaTerceirizada) {
+                            setState(() {
+                              _frotaTerceirizada = frotaTerceirizada;
+                            });
+                          },
                         ),
                       ),
                     ],
@@ -940,39 +1198,72 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: [
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue:
-                                  _seguroDeVidaEmGrupoEmpresa?.toString() ?? '',
-                              onChanged: (name) => setState(() {
-                                _seguroDeVidaEmGrupoEmpresa =
-                                    int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _seguroDeVidaEmGrupoEmpresa,
+                              onChanged: (seguroDeVidaEmGrupoEmpresa) {
+                                var seguroDeVidaEmGrupoFuncionario = '';
+                                if (seguroDeVidaEmGrupoEmpresa == '100%') {
+                                  seguroDeVidaEmGrupoFuncionario = '0%';
+                                } else if (seguroDeVidaEmGrupoEmpresa ==
+                                    '75%') {
+                                  seguroDeVidaEmGrupoFuncionario = '25%';
+                                } else if (seguroDeVidaEmGrupoEmpresa ==
+                                    '50%') {
+                                  seguroDeVidaEmGrupoFuncionario = '50%';
+                                } else if (seguroDeVidaEmGrupoEmpresa ==
+                                    '25%') {
+                                  seguroDeVidaEmGrupoFuncionario = '75%';
+                                } else {
+                                  seguroDeVidaEmGrupoFuncionario = '100%';
+                                }
+                                setState(() {
+                                  _seguroDeVidaEmGrupoEmpresa =
+                                      seguroDeVidaEmGrupoEmpresa;
+                                  _seguroDeVidaEmGrupoFuncionario =
+                                      seguroDeVidaEmGrupoFuncionario;
+                                });
+                              },
                             ),
                           ),
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue:
-                                  _seguroDeVidaEmGrupoFuncionario?.toString() ??
-                                      '',
-                              onChanged: (name) => setState(() {
-                                _seguroDeVidaEmGrupoFuncionario =
-                                    int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _seguroDeVidaEmGrupoFuncionario,
+                              onChanged: (seguroDeVidaEmGrupoFuncionario) {
+                                var seguroDeVidaEmGrupoEmpresa = '';
+                                if (seguroDeVidaEmGrupoFuncionario == '100%') {
+                                  seguroDeVidaEmGrupoEmpresa = '0%';
+                                } else if (seguroDeVidaEmGrupoFuncionario ==
+                                    '75%') {
+                                  seguroDeVidaEmGrupoEmpresa = '25%';
+                                } else if (seguroDeVidaEmGrupoFuncionario ==
+                                    '50%') {
+                                  seguroDeVidaEmGrupoEmpresa = '50%';
+                                } else if (seguroDeVidaEmGrupoFuncionario ==
+                                    '25%') {
+                                  seguroDeVidaEmGrupoEmpresa = '75%';
+                                } else {
+                                  seguroDeVidaEmGrupoEmpresa = '100%';
+                                }
+                                setState(() {
+                                  _seguroDeVidaEmGrupoFuncionario =
+                                      seguroDeVidaEmGrupoFuncionario;
+                                  _seguroDeVidaEmGrupoEmpresa =
+                                      seguroDeVidaEmGrupoEmpresa;
+                                });
+                              },
                             ),
                           ),
                         ],
@@ -986,41 +1277,76 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: [
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Empresa',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              initialValue: _seguroAcidentesDeTrabalhoEmpresa
-                                      ?.toString() ??
-                                  '',
-                              onChanged: (name) => setState(() {
-                                _seguroAcidentesDeTrabalhoEmpresa =
-                                    int.tryParse(name);
-                              }),
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
+                              initialValue: _seguroAcidentesDeTrabalhoEmpresa,
+                              onChanged: (seguroAcidentesDeTrabalhoEmpresa) {
+                                var seguroAcidentesDeTrabalhoFuncionario = '';
+                                if (seguroAcidentesDeTrabalhoEmpresa ==
+                                    '100%') {
+                                  seguroAcidentesDeTrabalhoFuncionario = '0%';
+                                } else if (seguroAcidentesDeTrabalhoEmpresa ==
+                                    '75%') {
+                                  seguroAcidentesDeTrabalhoFuncionario = '25%';
+                                } else if (seguroAcidentesDeTrabalhoEmpresa ==
+                                    '50%') {
+                                  seguroAcidentesDeTrabalhoFuncionario = '50%';
+                                } else if (seguroAcidentesDeTrabalhoEmpresa ==
+                                    '25%') {
+                                  seguroAcidentesDeTrabalhoFuncionario = '75%';
+                                } else {
+                                  seguroAcidentesDeTrabalhoFuncionario = '100%';
+                                }
+                                setState(() {
+                                  _seguroAcidentesDeTrabalhoEmpresa =
+                                      seguroAcidentesDeTrabalhoEmpresa;
+                                  _seguroAcidentesDeTrabalhoFuncionario =
+                                      seguroAcidentesDeTrabalhoFuncionario;
+                                });
+                              },
                             ),
                           ),
                           SizedBox(
                             width: 300,
-                            child: TextFormField(
+                            child: SelectFormField(
+                              key: UniqueKey(),
                               decoration: const InputDecoration(
                                 labelText: 'Funcionário',
                               ),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
+                              type: SelectFormFieldType.dropdown,
+                              items: getValoresBonificacoes(),
                               initialValue:
-                                  _seguroAcidentesDeTrabalhoFuncionario
-                                          ?.toString() ??
-                                      '',
-                              onChanged: (name) => setState(() {
-                                _seguroAcidentesDeTrabalhoFuncionario =
-                                    int.tryParse(name);
-                              }),
+                                  _seguroAcidentesDeTrabalhoFuncionario,
+                              onChanged:
+                                  (seguroAcidentesDeTrabalhoFuncionario) {
+                                var seguroAcidentesDeTrabalhoEmpresa = '';
+                                if (seguroAcidentesDeTrabalhoFuncionario ==
+                                    '100%') {
+                                  seguroAcidentesDeTrabalhoEmpresa = '0%';
+                                } else if (seguroAcidentesDeTrabalhoFuncionario ==
+                                    '75%') {
+                                  seguroAcidentesDeTrabalhoEmpresa = '25%';
+                                } else if (seguroAcidentesDeTrabalhoFuncionario ==
+                                    '50%') {
+                                  seguroAcidentesDeTrabalhoEmpresa = '50%';
+                                } else if (seguroAcidentesDeTrabalhoFuncionario ==
+                                    '25%') {
+                                  seguroAcidentesDeTrabalhoEmpresa = '75%';
+                                } else {
+                                  seguroAcidentesDeTrabalhoEmpresa = '100%';
+                                }
+                                setState(() {
+                                  _seguroAcidentesDeTrabalhoFuncionario =
+                                      seguroAcidentesDeTrabalhoFuncionario;
+                                  _seguroAcidentesDeTrabalhoEmpresa =
+                                      seguroAcidentesDeTrabalhoEmpresa;
+                                });
+                              },
                             ),
                           ),
                         ],
