@@ -12,6 +12,7 @@ import 'pages/company/company_list_page.dart';
 import 'pages/pages.dart';
 import 'pages/role/role_form_page.dart';
 import 'pages/role/role_list_page.dart';
+import 'pages/welcome/welcome_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,9 +65,9 @@ class MyApp extends StatelessWidget {
               case RoleFormPage.routeName:
                 return const RoleFormPage();
               case '/register':
-                return const RegisterPage();
+                return const WelcomePage();
               default:
-                return const HomePage();
+                return const WelcomePage();
             }
           },
         );

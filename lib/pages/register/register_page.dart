@@ -54,10 +54,12 @@ class _RegisterPageState extends State<RegisterPage> {
   String? _cestaBasicaFuncionario;
   String? _valeAlimentacaoEmpresa;
   String? _valeAlimentacaoFuncionario;
-  // Transporte
-  String? _valeTransporte;
-  String? _frotaPropria;
-  String? _frotaTerceirizada;
+  // Convenios
+  bool academias = false;
+  bool instituicoesDeEnsino = false;
+  bool livrarias = false;
+  bool lojasParceiras = false;
+  String? outros;
   // Seguro de Vida
   String? _seguroDeVidaEmGrupoEmpresa;
   String? _seguroDeVidaEmGrupoFuncionario;
@@ -205,10 +207,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     'funcionario': _valeAlimentacaoFuncionario ?? '0%',
                   },
                 },
-                'transporte': {
-                  'valeTransporte': _valeTransporte ?? '0%',
-                  'frotaPropria': _frotaPropria ?? '0%',
-                  'frotaTerceirizada': _frotaTerceirizada ?? '0%',
+                'convenios': {
+                  'academias': academias ? 'SIM' : 'NÃO',
+                  'instituicoesDeEnsino': instituicoesDeEnsino ? 'SIM' : 'NÃO',
+                  'livrarias': livrarias ? 'SIM' : 'NÃO',
+                  'lojasParceiras': lojasParceiras ? 'SIM' : 'NÃO',
+                  'outros': outros ?? '',
                 },
                 'seguroDeVida': {
                   'seguroDeVidaEmGrupo': {
@@ -1113,7 +1117,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ],
                   ),
                   ExpansionTile(
-                    title: const Text('Transporte (Participação %)'),
+                    title: const Text('Convênios'),
                     expandedCrossAxisAlignment: CrossAxisAlignment.start,
                     expandedAlignment: Alignment.topLeft,
                     childrenPadding: const EdgeInsets.only(
@@ -1121,64 +1125,58 @@ class _RegisterPageState extends State<RegisterPage> {
                       bottom: 32,
                     ),
                     children: [
-                      const Text('Vale Transporte:'),
-                      const SizedBox(height: 6),
-                      SizedBox(
-                        width: 300,
-                        child: SelectFormField(
-                          key: UniqueKey(),
-                          decoration: const InputDecoration(
-                            labelText: 'Funcionário',
-                          ),
-                          type: SelectFormFieldType.dropdown,
-                          items: getValoresBonificacoes(),
-                          initialValue: _valeTransporte,
-                          onChanged: (valeTransporte) {
-                            setState(() {
-                              _valeTransporte = valeTransporte;
-                            });
-                          },
-                        ),
+                      CheckboxListTile(
+                        title: const Text('Academias'),
+                        value: academias,
+                        onChanged: (value) {
+                          setState(() {
+                            academias = value!;
+                          });
+                        },
+                        activeColor: Theme.of(context).colorScheme.primary,
                       ),
-                      const SizedBox(height: 16),
-                      const Text('Frota Própria:'),
-                      SizedBox(
-                        width: 300,
-                        child: SelectFormField(
-                          key: UniqueKey(),
-                          decoration: const InputDecoration(
-                            labelText: 'Funcionário',
-                          ),
-                          type: SelectFormFieldType.dropdown,
-                          items: getValoresBonificacoes(),
-                          initialValue: _frotaPropria,
-                          onChanged: (frotaPropria) {
-                            setState(() {
-                              _frotaPropria = frotaPropria;
-                            });
-                          },
-                        ),
+                      CheckboxListTile(
+                        title: const Text(
+                            'Instituições de ensino (escolas, faculdades, cursos de línguas)'),
+                        value: instituicoesDeEnsino,
+                        onChanged: (value) {
+                          setState(() {
+                            instituicoesDeEnsino = value!;
+                          });
+                        },
+                        activeColor: Theme.of(context).colorScheme.primary,
                       ),
-                      const SizedBox(height: 16),
-                      const Text('Frota Terceirizada:'),
-                      const SizedBox(height: 6),
-                      SizedBox(
-                        width: 300,
-                        child: SelectFormField(
-                          key: UniqueKey(),
-                          decoration: const InputDecoration(
-                            labelText: 'Funcionário',
-                          ),
-                          type: SelectFormFieldType.dropdown,
-                          items: getValoresBonificacoes(),
-                          initialValue: _frotaTerceirizada,
-                          onChanged: (frotaTerceirizada) {
-                            setState(() {
-                              _frotaTerceirizada = frotaTerceirizada;
-                            });
-                          },
-                        ),
+                      CheckboxListTile(
+                        title: const Text('Livrarias'),
+                        value: livrarias,
+                        onChanged: (value) {
+                          setState(() {
+                            livrarias = value!;
+                          });
+                        },
+                        activeColor: Theme.of(context).colorScheme.primary,
                       ),
+                      CheckboxListTile(
+                        title: const Text('Lojas Parceiras'),
+                        value: lojasParceiras,
+                        onChanged: (value) {
+                          setState(() {
+                            lojasParceiras = value!;
+                          });
+                        },
+                        activeColor: Theme.of(context).colorScheme.primary,
+                      ),
+                      SizedBox(
+                          width: 400,
+                          child: TextFormField(
+                            decoration: const InputDecoration(
+                              labelText: 'Outros',
+                            ),
+                            initialValue: outros,
+                            onChanged: (o) => outros = o,
+                            maxLines: 3,
+                          ),
+                        ),
                     ],
                   ),
                   ExpansionTile(
