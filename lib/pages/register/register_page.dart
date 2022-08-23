@@ -76,7 +76,6 @@ class _RegisterPageState extends State<RegisterPage> {
   int? _frequencia;
   int? _salario;
   int? _bonificacoes;
-  String? _observacoes;
   final List<Map<String, dynamic>> _cargosDaEmpresa = [];
 
   late final GlobalKey<FormState> _companyInfoFormKey;
@@ -1518,16 +1517,6 @@ Informar em valores (R\$) quaisquer adicionais recebidos pelo ocupante. Informar
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              width: 200,
-                              child: TextFormField(
-                                decoration: const InputDecoration(
-                                  labelText: 'Observações',
-                                ),
-                                onSaved: (observacoes) =>
-                                    _observacoes = observacoes,
-                              ),
-                            ),
                           ],
                         ),
                         const SizedBox(height: 24),
@@ -1544,7 +1533,6 @@ Informar em valores (R\$) quaisquer adicionais recebidos pelo ocupante. Informar
                                   'frequencia': _frequencia,
                                   'salario': _salario,
                                   'bonificacoes': _bonificacoes,
-                                  'observacoes': _observacoes,
                                 });
                                 estaEmAdicaoDeCargos = false;
                                 _cargo = null;
