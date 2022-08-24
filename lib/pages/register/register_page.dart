@@ -344,19 +344,19 @@ class _RegisterPageState extends State<RegisterPage> {
                             labelText: 'Faturamento Anual (R\$)',
                           ),
                           type: SelectFormFieldType.dropdown,
-                          initialValue: 'Até 4.8 mil',
+                          initialValue: 'Até 4.8 milhões',
                           items: const [
                             {
-                              'value': 'Até 4.8 mil',
-                              'label': 'Até 4.8 mil',
+                              'value': 'Até 4.8 milhões',
+                              'label': 'Até 4.8 milhões',
                             },
                             {
-                              'value': 'De 4.8 mil até 20 mil',
-                              'label': 'De 4.8 mil até 20 mil',
+                              'value': 'De 4.8 milhões até 20 milhões',
+                              'label': 'De 4.8 milhões até 20 milhões',
                             },
                             {
-                              'value': 'Acima de 20 mil',
-                              'label': 'Acima de 20 mil',
+                              'value': 'Acima de 20 milhões',
+                              'label': 'Acima de 20 milhões',
                             },
                           ],
                           validator: (faturamentoAnual) =>
@@ -1500,7 +1500,7 @@ Ex.: Mecânicos Manutenção
                             Tooltip(
                               message: '''
 
-Informar em valores (R\$) quaisquer adicionais recebidos pelo ocupante. Informar no campo observações o tipo de adicional recebidos.
+Informar em valores (R\$) quaisquer adicionais recebidos pelo ocupante.
 ''',
                               child: SizedBox(
                                 width: 150,
