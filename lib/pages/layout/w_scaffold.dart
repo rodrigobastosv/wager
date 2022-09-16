@@ -18,14 +18,38 @@ class WScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<_MenuItem> menu = [
+      _MenuItem(
+        onPressed: () => Navigator.restorablePushNamed(
+          context,
+          CompanyListPage.routeName,
+        ),
+        label: 'EMPRESAS',
+      ),
+      _MenuItem(
+        onPressed: () => Navigator.restorablePushNamed(
+          context,
+          RoleListPage.routeName,
+        ),
+        label: 'CARGOS',
+      ),
+      _MenuItem(
+        onPressed: () {},
+        label: 'SALÁRIOS',
+      ),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
+          mainAxisAlignment: MediaQuery.of(context).size.width > 600
+              ? MainAxisAlignment.start
+              : MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(
+              padding: EdgeInsets.symmetric(
                 vertical: 4,
-                horizontal: 10,
+                horizontal: MediaQuery.of(context).size.width > 600 ? 10 : 0,
               ),
               child: Image.asset(
                 './assets/images/logo-menor.png',
@@ -34,7 +58,7 @@ class WScaffold extends StatelessWidget {
                 filterQuality: FilterQuality.high,
               ),
             ),
-            const SizedBox(width: 40),
+            SizedBox(width: MediaQuery.of(context).size.width > 600 ? 40 : 16),
             if (title != null && title!.isNotEmpty) ...{
               Container(
                 width: 2,
@@ -42,35 +66,43 @@ class WScaffold extends StatelessWidget {
                 color: Theme.of(context).dividerColor,
               ),
               const SizedBox(width: 16),
-              Text(title!),
+              Expanded(
+                child: Text(
+                  title!,
+                  maxLines: 2,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width > 600
+                        ? Theme.of(context).appBarTheme.titleTextStyle?.fontSize
+                        : 18,
+                  ),
+                ),
+              ),
             }
           ],
         ),
-        leading: const SizedBox(),
-        leadingWidth: 0,
+        centerTitle: MediaQuery.of(context).size.width > 600 ? false : true,
+        leading: withMenu && MediaQuery.of(context).size.width <= 600
+            ? null
+            : const SizedBox(),
+        leadingWidth:
+            withMenu && MediaQuery.of(context).size.width <= 600 ? null : 0,
         actions: [
-          if (withMenu) ...{
-            _MenuItem(
-              onPressed: () => Navigator.restorablePushNamed(
-                context,
-                CompanyListPage.routeName,
-              ),
-              label: 'EMPRESAS',
-            ),
-            _MenuItem(
-              onPressed: () => Navigator.restorablePushNamed(
-                context,
-                RoleListPage.routeName,
-              ),
-              label: 'CARGOS',
-            ),
-            _MenuItem(
-              onPressed: () {},
-              label: 'SALÁRIOS',
-            ),
+          if (withMenu && MediaQuery.of(context).size.width > 600) ...{
+            ...menu,
           },
           const SizedBox(width: 16),
         ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            if (withMenu && MediaQuery.of(context).size.width <= 600) ...{
+              ...menu,
+            },
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(
@@ -96,16 +128,21 @@ class _MenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: onPressed,
-      style: ButtonStyle(
-        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-          const EdgeInsets.symmetric(
-            horizontal: 16,
-          ),
-        ),
-      ),
-      child: Text(label),
-    );
+    return MediaQuery.of(context).size.width > 600
+        ? TextButton(
+            onPressed: onPressed,
+            style: ButtonStyle(
+              padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                const EdgeInsets.symmetric(
+                  horizontal: 16,
+                ),
+              ),
+            ),
+            child: Text(label),
+          )
+        : ListTile(
+            onTap: onPressed,
+            title: Text(label),
+          );
   }
 }

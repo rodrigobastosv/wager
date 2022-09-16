@@ -24,6 +24,7 @@ class RoleListPage extends StatelessWidget {
                 final doc = snapshot.data!.docs.elementAt(i);
                 final data = doc.data();
                 return ListTile(
+                  contentPadding: EdgeInsets.zero,
                   title: Text(data['nome']),
                   subtitle: Text(data['descricao']),
                 );
